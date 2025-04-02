@@ -85,4 +85,16 @@ namespace Thalmic.Myo
 
         public sbyte Rssi { get; private set; }
     }
+
+    // Added new for retrieving EMG data
+    public class EmgDataEventArgs : MyoEventArgs
+    {
+        public EmgDataEventArgs(Myo myo, DateTime timestamp, int[] emg)
+            : base(myo, timestamp)
+        {
+            this.Emg = emg;
+        }
+
+        public int[] Emg { get; private set; }
+    }
 }
