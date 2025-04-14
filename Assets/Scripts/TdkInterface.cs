@@ -10,142 +10,142 @@ namespace Tdk
 	public static class TdkInterface
 #endif // UNITY_ANDROID
 	{
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int InitializeTI();
 
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int ShutdownTI();
 
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern IntPtr GetVersionNumber();
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int Connect([MarshalAs(UnmanagedType.LPStr)]string name, int type, IntPtr _callback);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern void SetOutgoingDataCallback(IntPtr data_callback);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int Pulse(int deviceId, int tacNum, int duration, int delay);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern void TactorSelfTest(int deviceId, int delay);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern void ReadSegmentList(int deviceId, int delay);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int ReadFW(int deviceId);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern void UpdateTI();
 	
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int Close(int deviceId);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int CloseAll();
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int RampGain(int deviceID, int _tacNum, int gainStart,int gainEnd,int duration, int func,int _delay);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int RampFreq(int deviceID, int _tacNum, int freqStart,int freqEnd,int duration, int func,int _delay);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int ChangeGain(int deviceID, int _tacNum, int gainVal, int _delay);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int ChangeFreq(int deviceID, int _tacNum, int freqVal, int _delay);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int ChangeSigSource(int deviceID, int _tacNum, int type, int _delay);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int Discover(int type);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern IntPtr GetDiscoveredDeviceName(int index);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int GetDiscoveredDeviceType(int index);
 
-        [DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern int BeginStoreTAction(int _deviceID, int tacID);
 
-        [DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern int FinishStoreTAction(int _deviceID);
 
-        [DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern int PlayStoredTAction(int _deviceID, int _delay, int tacId);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int LoadTActionDatabase([MarshalAs(UnmanagedType.LPStr)] string file);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern IntPtr GetTActionName(int id);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int GetLoadedTActionSize();
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int GetTActionDuration(int tacID);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int PlayTAction(int boardID, int tacID, int tactorID, float gainScale, float freq1Scale, float freq2Scale, float timeScale);
 		
-        [DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+        [DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
         public static extern int PlayTActionToSegment(int boardID, int tacID, int tactorIDOffset, int controllerSegmentID, float gainScale, float freq1Scale, float freq2Scale, float timeScale);
 
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int Stop(int deviceID, int _delay);
 
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int SetTactors(int deviceID, int _delay, byte[] states);
 
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int SetTactorType(int deviceID, int _delay, int tactor, int type);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int WriteToBoard(int deviceID, byte[] data, int data_length);
 			
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int GetLastEAIError();
 
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern void SetKillOnNaks(bool true_for_kill);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern int IsDatabaseLoaded();
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern int UnloadTActions();
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern int UnloadTAction(byte[] uuid);
 			
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern int PlayNonLoadedTAction(int boardID,System.IntPtr serializedData,System.IntPtr segptr,System.IntPtr taActionptr,System.IntPtr dataptr,System.IntPtr tactorsptr);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern int SaveNonLoadedTAction(byte[] database,byte[] name,System.IntPtr serializedData,System.IntPtr segptr,System.IntPtr taActionptr,System.IntPtr dataptr,System.IntPtr tactorsptr);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern int SaveTAction(byte[] database,byte[] name,byte[] tid);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern int GetTAction(byte[] name,byte[] id,System.IntPtr serializedData,System.IntPtr segptr,System.IntPtr taActionptr,System.IntPtr dataptr,System.IntPtr tactorsptr);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Auto, SetLastError = true)]
 		public static extern int RemapTAction(int boardID,byte[] name,byte[] id,System.IntPtr serializedData,System.IntPtr segptr,System.IntPtr taActionptr,System.IntPtr dataptr,System.IntPtr tactorsptr,int TactorID);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int DeleteTActionFromDatabase(byte[] database,byte[] uuid);
 		
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern int IsInDatabase(byte[] dbName,byte[]name,byte[] id,System.IntPtr serializedData,System.IntPtr segptr,System.IntPtr taActionptr,System.IntPtr dataptr,System.IntPtr tactorsptr);
 
-		[DllImport(@"TactorInterface.dll", CharSet = CharSet.Ansi, SetLastError = true)]
+		[DllImport("TactorInterface", CharSet = CharSet.Ansi, SetLastError = true)]
 		public static extern void SetTactorStateCallback(IntPtr ts_callback);
 	}
 
