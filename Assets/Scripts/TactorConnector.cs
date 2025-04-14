@@ -6,7 +6,7 @@ public class TactorConnector : MonoBehaviour
 {
     private int connectedBoardId = -1;
 
-    [SerializeField] private string comPort = "COM5"; // Change this to your actual port
+    [SerializeField] private string comPort = "COM4"; // Change this to your actual port
 
     void Start()
     {
