@@ -92,6 +92,7 @@ public class TactorConnector : MonoBehaviour
         //{
             //Debug.Log("Pulsing tactor 1 for 250 ms...");
             //CheckError(TdkInterface.Pulse(connectedBoardId, 1, 250, 0));
+            //if (Input.GetKeyDown(KeyCode.Z)) TdkInterface.Pulse(connectedBoardId, 1, 250, delay); // pulse tactor 1
         //}
          if (connectedBoardId < 0) return;
 
