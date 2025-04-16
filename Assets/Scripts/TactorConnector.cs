@@ -5,8 +5,8 @@ using Tdk;
 public class TactorConnector : MonoBehaviour
 {
     private int connectedBoardId = -1;
-    [SerializeField] private int delay = 0;
-    [SerializeField] private int pulseDuration = 250;
+    [SerializeField] private int delay = 0; // Delay before vibration starts after command is received (e.g. delay can be different for each tactor)
+    [SerializeField] private int pulseDuration = 250; // Duration of vibration when a pulse is sent
 
     [SerializeField] private string comPort = "COM4"; // Change this to your actual port
 
@@ -23,6 +23,7 @@ public class TactorConnector : MonoBehaviour
     "Valid Frequency Range: 300-3550\n";
     //Duration is in ms. Minimum 1.
 
+    // Below are variables for each tactor, editable from the inspector.
     // ---------------- Tactor 1 ----------------
     [Header("Tactor 1")]
     [SerializeField] private int gain1 = 100;
@@ -79,14 +80,14 @@ public class TactorConnector : MonoBehaviour
     [SerializeField] private int ramp5Func = 1;
 
 
-    void Awake()
+    void Awake() // Don't mind this. Just making sure that the TextAreas in the inspector load properly.
     {
         controls = controls;
         numbersGuide = numbersGuide;
     }
 
 
-    void Start()
+    void Start() // Opens a connection to the tactor device software and binds the controller id to connectedBoardId.
     {
         Debug.Log("Initializing TDK...");
         CheckError(TdkInterface.InitializeTI());
@@ -105,7 +106,7 @@ public class TactorConnector : MonoBehaviour
         }
     }
 
-    void Update()
+    void Update() // Here we just listen for key presses to trigger various commands.
     {
         // Press spacebar to pulse tactor 1
         //if (connectedBoardId >= 0 && Input.GetKeyDown(KeyCode.Space))
@@ -128,7 +129,7 @@ public class TactorConnector : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Z)) TdkInterface.Pulse(connectedBoardId, 1, pulseDuration, delay); // pulse tactor1
     }
 
-    void OnApplicationQuit()
+    void OnApplicationQuit() // Shut down the connection to the tactor software when application closes.
     {
         if (connectedBoardId >= 0)
         {
@@ -140,7 +141,7 @@ public class TactorConnector : MonoBehaviour
         CheckError(TdkInterface.ShutdownTI());
     }
 
-    private void CheckError(int ret)
+    private void CheckError(int ret) // Checks the tactor device software for errors
     {
         if (ret < 0)
         {
@@ -148,26 +149,26 @@ public class TactorConnector : MonoBehaviour
         }
     }
 
-    void ApplySettingsToTactor(int tactorID, int gain, int frequency)
+    void ApplySettingsToTactor(int tactorID, int gain, int frequency) // Applies gain and frequency settings to the specified tactor
     {
         Debug.Log($"[Tactor {tactorID}] Setting Gain: {gain}, Freq: {frequency}");
         CheckError(TdkInterface.ChangeGain(connectedBoardId, tactorID, gain, delay));
         CheckError(TdkInterface.ChangeFreq(connectedBoardId, tactorID, frequency, delay));
     }
 
-    void RampGain(int tactorID, int start, int end, int duration, int func)
+    void RampGain(int tactorID, int start, int end, int duration, int func) // Ramps the gain of the specified tactor
     {
         Debug.Log($"[Tactor {tactorID}] Ramping Gain: {start} → {end}");
         CheckError(TdkInterface.RampGain(connectedBoardId, tactorID, start, end, duration, func, delay));
     }
 
-    void RampFrequency(int tactorID, int start, int end, int duration, int func)
+    void RampFrequency(int tactorID, int start, int end, int duration, int func) // Ramps the vibration frequency of the specified tactor
     {
         Debug.Log($"[Tactor {tactorID}] Ramping Frequency: {start}Hz → {end}Hz");
         CheckError(TdkInterface.RampFreq(connectedBoardId, tactorID, start, end, duration, func, delay));
     }
 
-    public void ApplyAllStaticSettings()
+    public void ApplyAllStaticSettings() // Applies gain and frequency settings to all 5 tactors
     {
         ApplySettingsToTactor(1, gain1, frequency1);
         ApplySettingsToTactor(2, gain2, frequency2);
@@ -176,7 +177,7 @@ public class TactorConnector : MonoBehaviour
         ApplySettingsToTactor(5, gain5, frequency5);
     }
 
-    public void RampAllGains()
+    public void RampAllGains() // Ramps the gain of all 5 tactors from rampGainStart to rampGainEnd
     {
         RampGain(1, ramp1GainStart, ramp1GainEnd, ramp1Duration, ramp1Func);
         RampGain(2, ramp2GainStart, ramp2GainEnd, ramp2Duration, ramp2Func);
@@ -185,7 +186,7 @@ public class TactorConnector : MonoBehaviour
         RampGain(5, ramp5GainStart, ramp5GainEnd, ramp5Duration, ramp5Func);
     }
 
-    public void RampAllFrequencies()
+    public void RampAllFrequencies() // Ramps the frequencies of all 5 tactors from rampFreqStart to rampFreqEnd
     {
         RampFrequency(1, ramp1FreqStart, ramp1FreqEnd, ramp1Duration, ramp1Func);
         RampFrequency(2, ramp2FreqStart, ramp2FreqEnd, ramp2Duration, ramp2Func);
