@@ -7,64 +7,82 @@ public class TactorConnector : MonoBehaviour
     private int connectedBoardId = -1;
     [SerializeField] private int delay = 0;
 
-
     [SerializeField] private string comPort = "COM4"; // Change this to your actual port
 
+    [TextArea(10,20)]
+    [SerializeField] string controls = "Numbers 1-5 (not numpad) applies settings to tactor 1-5.\n" +
+    "Q applies gain and frequence settings to all tactors.\n" +
+    "W applies ramping gain on all tactors.\n" +
+    "E applies ramping frequencies on all tactors.\n" +
+    "Each tactor has individual settings below. These should update at runtime, once applied using one of the command keys mentioned here.\n";
+    
+    [TextArea(5,20)]
+    [SerializeField] string numbersGuide = "Valid Gain Range: 1-255\n" +
+    "Valid Frequency Range: 300-3550\n";
+    //Duration is in ms. Minimum 1.
 
     // ---------------- Tactor 1 ----------------
     [Header("Tactor 1")]
     [SerializeField] private int gain1 = 100;
-    [SerializeField] private int frequency1 = 150;
-    [SerializeField] private int gain1Start = 0;
-    [SerializeField] private int gain1End = 255;
-    [SerializeField] private int freq1Start = 100;
-    [SerializeField] private int freq1End = 200;
+    [SerializeField] private int frequency1 = 500;
+    [SerializeField] private int ramp1GainStart = 1;
+    [SerializeField] private int ramp1GainEnd = 255;
+    [SerializeField] private int ramp1FreqStart = 300;
+    [SerializeField] private int ramp1FreqEnd = 3550;
     [SerializeField] private int ramp1Duration = 1000;
     [SerializeField] private int ramp1Func = 1;
 
     // ---------------- Tactor 2 ----------------
     [Header("Tactor 2")]
     [SerializeField] private int gain2 = 100;
-    [SerializeField] private int frequency2 = 150;
-    [SerializeField] private int gain2Start = 0;
-    [SerializeField] private int gain2End = 255;
-    [SerializeField] private int freq2Start = 100;
-    [SerializeField] private int freq2End = 200;
+    [SerializeField] private int frequency2 = 500;
+    [SerializeField] private int ramp2GainStart = 1;
+    [SerializeField] private int ramp2GainEnd = 255;
+    [SerializeField] private int ramp2FreqStart = 300;
+    [SerializeField] private int ramp2FreqEnd = 3550;
     [SerializeField] private int ramp2Duration = 1000;
     [SerializeField] private int ramp2Func = 1;
 
     // ---------------- Tactor 3 ----------------
     [Header("Tactor 3")]
     [SerializeField] private int gain3 = 100;
-    [SerializeField] private int frequency3 = 150;
-    [SerializeField] private int gain3Start = 0;
-    [SerializeField] private int gain3End = 255;
-    [SerializeField] private int freq3Start = 100;
-    [SerializeField] private int freq3End = 200;
+    [SerializeField] private int frequency3 = 500;
+    [SerializeField] private int ramp3GainStart = 1;
+    [SerializeField] private int ramp3GainEnd = 255;
+    [SerializeField] private int ramp3FreqStart = 300;
+    [SerializeField] private int ramp3FreqEnd = 3550;
     [SerializeField] private int ramp3Duration = 1000;
     [SerializeField] private int ramp3Func = 1;
 
     // ---------------- Tactor 4 ----------------
     [Header("Tactor 4")]
     [SerializeField] private int gain4 = 100;
-    [SerializeField] private int frequency4 = 150;
-    [SerializeField] private int gain4Start = 0;
-    [SerializeField] private int gain4End = 255;
-    [SerializeField] private int freq4Start = 100;
-    [SerializeField] private int freq4End = 200;
+    [SerializeField] private int frequency4 = 500;
+    [SerializeField] private int ramp4GainStart = 1;
+    [SerializeField] private int ramp4GainEnd = 255;
+    [SerializeField] private int ramp4FreqStart = 300;
+    [SerializeField] private int ramp4FreqEnd = 3550;
     [SerializeField] private int ramp4Duration = 1000;
     [SerializeField] private int ramp4Func = 1;
 
     // ---------------- Tactor 5 ----------------
     [Header("Tactor 5")]
     [SerializeField] private int gain5 = 100;
-    [SerializeField] private int frequency5 = 150;
-    [SerializeField] private int gain5Start = 0;
-    [SerializeField] private int gain5End = 255;
-    [SerializeField] private int freq5Start = 100;
-    [SerializeField] private int freq5End = 200;
+    [SerializeField] private int frequency5 = 500;
+    [SerializeField] private int ramp5GainStart = 1;
+    [SerializeField] private int ramp5GainEnd = 255;
+    [SerializeField] private int ramp5FreqStart = 300;
+    [SerializeField] private int ramp5FreqEnd = 3550;
     [SerializeField] private int ramp5Duration = 1000;
     [SerializeField] private int ramp5Func = 1;
+
+
+    void Awake()
+    {
+        controls = controls;
+        numbersGuide = numbersGuide;
+    }
+
 
     void Start()
     {
@@ -157,19 +175,19 @@ public class TactorConnector : MonoBehaviour
 
     public void RampAllGains()
     {
-        RampGain(1, gain1Start, gain1End, ramp1Duration, ramp1Func);
-        RampGain(2, gain2Start, gain2End, ramp2Duration, ramp2Func);
-        RampGain(3, gain3Start, gain3End, ramp3Duration, ramp3Func);
-        RampGain(4, gain4Start, gain4End, ramp4Duration, ramp4Func);
-        RampGain(5, gain5Start, gain5End, ramp5Duration, ramp5Func);
+        RampGain(1, ramp1GainStart, ramp1GainEnd, ramp1Duration, ramp1Func);
+        RampGain(2, ramp2GainStart, ramp2GainEnd, ramp2Duration, ramp2Func);
+        RampGain(3, ramp3GainStart, ramp3GainEnd, ramp3Duration, ramp3Func);
+        RampGain(4, ramp4GainStart, ramp4GainEnd, ramp4Duration, ramp4Func);
+        RampGain(5, ramp5GainStart, ramp5GainEnd, ramp5Duration, ramp5Func);
     }
 
     public void RampAllFrequencies()
     {
-        RampFrequency(1, freq1Start, freq1End, ramp1Duration, ramp1Func);
-        RampFrequency(2, freq2Start, freq2End, ramp2Duration, ramp2Func);
-        RampFrequency(3, freq3Start, freq3End, ramp3Duration, ramp3Func);
-        RampFrequency(4, freq4Start, freq4End, ramp4Duration, ramp4Func);
-        RampFrequency(5, freq5Start, freq5End, ramp5Duration, ramp5Func);
+        RampFrequency(1, ramp1FreqStart, ramp1FreqEnd, ramp1Duration, ramp1Func);
+        RampFrequency(2, ramp2FreqStart, ramp2FreqEnd, ramp2Duration, ramp2Func);
+        RampFrequency(3, ramp3FreqStart, ramp3FreqEnd, ramp3Duration, ramp3Func);
+        RampFrequency(4, ramp4FreqStart, ramp4FreqEnd, ramp4Duration, ramp4Func);
+        RampFrequency(5, ramp5FreqStart, ramp5FreqEnd, ramp5Duration, ramp5Func);
     }
 }
