@@ -6,6 +6,7 @@ public class TactorConnector : MonoBehaviour
 {
     private int connectedBoardId = -1;
     [SerializeField] private int delay = 0;
+    [SerializeField] private int pulseDuration = 250;
 
     [SerializeField] private string comPort = "COM4"; // Change this to your actual port
 
@@ -15,6 +16,7 @@ public class TactorConnector : MonoBehaviour
     "W applies ramping gain on all tactors.\n" +
     "E applies ramping frequencies on all tactors.\n" +
     "Each tactor has individual settings below. These should update at runtime, once applied using one of the command keys mentioned here.\n";
+    //For testing purposes, "Z" pulses tactor 1 with duration = pulseDuration and delay = delay
     
     [TextArea(5,20)]
     [SerializeField] string numbersGuide = "Valid Gain Range: 1-255\n" +
@@ -123,6 +125,7 @@ public class TactorConnector : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q)) ApplyAllStaticSettings();
         if (Input.GetKeyDown(KeyCode.W)) RampAllGains();
         if (Input.GetKeyDown(KeyCode.E)) RampAllFrequencies();
+        if (Input.GetKeyDown(KeyCode.Z)) TdkInterface.Pulse(connectedBoardId, 1, pulseDuration, delay); // pulse tactor1
     }
 
     void OnApplicationQuit()
