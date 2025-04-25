@@ -23,6 +23,12 @@ public class StoreEMG : MonoBehaviour
 
     public void storeData(int[] emg) {
 
+         if (emg == null || emg.Length < 8) {
+        Debug.LogWarning($"EMG data length is {emg?.Length ?? 0}, expected 8. Skipping this sample.");
+        counter++;
+        return;
+        }
+        
         // EMG pod 08 issue
         // The EMG Pod 08 is unreadable during the first loop iteration. i.e. In the first loop the emg[] size is 7, not 8
         if (counter > 2)

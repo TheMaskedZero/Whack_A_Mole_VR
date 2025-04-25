@@ -8,6 +8,12 @@ public class EMG02_Controller : MonoBehaviour
 {
     private int fr;
     public static List<float> avg_emg_Pod02 = new List<float>();
+    private DataFltr csvFltr;
+
+    void Start()
+    {
+        DataFltr csvFltr = gameObject.AddComponent<DataFltr>();
+    }
 
     private void Update()   // Loop set to Update to get dynamic graphs
     {
@@ -18,7 +24,10 @@ public class EMG02_Controller : MonoBehaviour
 
         if (PodData.Count > fr)
         {
-            DataFltr csvFltr = new DataFltr();
+            if(csvFltr == null)
+            {
+                csvFltr = gameObject.AddComponent<DataFltr>();
+            }
             avg_emg_Pod02.Add(csvFltr.MovingAvg(fr, PodData));     // Elapsed time for all MovingAvg (fr 10): 4 ms for 6,900 rows --> x2.45 = 9.8 ms
         }
     }
