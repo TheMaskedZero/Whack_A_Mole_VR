@@ -17,39 +17,46 @@ public class StoreEMG : MonoBehaviour
     public static List<DateTime> timestamp = new List<DateTime>();
     public int counter = 0;
 
-    public bool RecordingEMGData;
+    private Coroutine emgCoroutine;
 
     void Start()
     {
-        StartCoroutine(StoreTheEMGData()); // Start the coroutine to store EMG data
+        // Start the coroutine when the script starts
+        StartEMGRecording();
     }
 
-    private IEnumerator StoreTheEMGData()
+    public void StartEMGRecording()
     {
-        while(RecordingEMGData == true)
+        if (emgCoroutine == null)
         {
+            emgCoroutine = StartCoroutine(RecordEMGData());
+        }
+    }
 
-            if (ThalmicMyo.emg != null && ThalmicMyo.emg.Length >= 8) // Check if EMG data is available
+    public void StopEMGRecording()
+    {
+        if (emgCoroutine != null)
+        {
+            StopCoroutine(emgCoroutine);
+            emgCoroutine = null;
+        }
+    }
+
+    private IEnumerator RecordEMGData()
+    {
+        while (true)
+        {
+            if (ThalmicMyo.emg != null && ThalmicMyo.emg.Length >= 8)
             {
-                
                 storeData(ThalmicMyo.emg); // Store EMG data
-                
-
-                Debug.Log("EMG data stored: " + storeEMG01[storeEMG01.Count - 1] + ", " + storeEMG02[storeEMG02.Count - 1] + ", " + storeEMG03[storeEMG03.Count - 1] + ", " + storeEMG04[storeEMG04.Count - 1] + ", " + storeEMG05[storeEMG05.Count - 1] + ", " + storeEMG06[storeEMG06.Count - 1] + ", " + storeEMG07[storeEMG07.Count - 1] + ", " + storeEMG08[storeEMG08.Count - 1]);
             }
             else
             {
                 Debug.LogWarning("EMG data is incomplete or null. Skipping this iteration.");
             }
-            
-            yield return new WaitForSecondsRealtime(0.01f); // Wait for 10ms before storing the next data point
-            
 
+            yield return new WaitForSecondsRealtime(0.01f); // Wait for 10ms before the next iteration
         }
-    }
-
-    public void Update() {
-        //storeData(ThalmicMyo.emg);
     }
 
     public void storeData(int[] emg)
@@ -87,6 +94,6 @@ public class StoreEMG : MonoBehaviour
     void OnDestroy()
     {
         // Stop the coroutine when the object is destroyed
-        StopCoroutine(StoreTheEMGData());
+        StopEMGRecording();
     }
 }
