@@ -17,8 +17,39 @@ public class StoreEMG : MonoBehaviour
     public static List<DateTime> timestamp = new List<DateTime>();
     public int counter = 0;
 
+    public bool RecordingEMGData;
+
+    void Start()
+    {
+        StartCoroutine(StoreTheEMGData()); // Start the coroutine to store EMG data
+    }
+
+    private IEnumerator StoreTheEMGData()
+    {
+        while(RecordingEMGData == true)
+        {
+
+            if (ThalmicMyo.emg != null && ThalmicMyo.emg.Length >= 8) // Check if EMG data is available
+            {
+                
+                storeData(ThalmicMyo.emg); // Store EMG data
+                
+
+                Debug.Log("EMG data stored: " + storeEMG01[storeEMG01.Count - 1] + ", " + storeEMG02[storeEMG02.Count - 1] + ", " + storeEMG03[storeEMG03.Count - 1] + ", " + storeEMG04[storeEMG04.Count - 1] + ", " + storeEMG05[storeEMG05.Count - 1] + ", " + storeEMG06[storeEMG06.Count - 1] + ", " + storeEMG07[storeEMG07.Count - 1] + ", " + storeEMG08[storeEMG08.Count - 1]);
+            }
+            else
+            {
+                Debug.LogWarning("EMG data is incomplete or null. Skipping this iteration.");
+            }
+            
+            yield return new WaitForSecondsRealtime(0.01f); // Wait for 10ms before storing the next data point
+            
+
+        }
+    }
+
     public void Update() {
-        storeData(ThalmicMyo.emg);
+        //storeData(ThalmicMyo.emg);
     }
 
     public void storeData(int[] emg)
@@ -51,5 +82,11 @@ public class StoreEMG : MonoBehaviour
         {
             Debug.LogWarning("EMG data is incomplete or null. Skipping this iteration.");
         }
+    }
+
+    void OnDestroy()
+    {
+        // Stop the coroutine when the object is destroyed
+        StopCoroutine(StoreTheEMGData());
     }
 }
