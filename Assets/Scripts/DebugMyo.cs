@@ -49,7 +49,7 @@ public class DebugMyo : MonoBehaviour
             if (thalmicMyo != null && thalmicMyo.internalMyo != null)
             {
                 myo = thalmicMyo.internalMyo;
-                myo.SetStreamEmg(StreamEmg.Enabeld);
+                //myo.SetStreamEmg(StreamEmg.Enabeld);
                 myo.EmgData += OnEmgData;
                 Debug.Log("DebugMyo.cs: Myo paired. Enabled EMG data streaming.");
             }
@@ -58,7 +58,7 @@ public class DebugMyo : MonoBehaviour
 
     void OnEmgData(object callbackresponder, EmgDataEventArgs args)
     {
-        Debug.Log($"Raw EMG Data: {args.EmgData}.");
+        //Debug.Log($"Raw EMG Data: {args.EmgData}.");
     }
 
     void OnDestroy()
