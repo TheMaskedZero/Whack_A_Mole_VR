@@ -1,142 +1,159 @@
-# Colab setup: install dependencies (if missing)
-# !pip install pandas numpy scipy scikit-learn
-
 import pandas as pd
 import numpy as np
-from scipy import signal
-from scipy.stats import skew, kurtosis
-from sklearn.preprocessing import StandardScaler, MinMaxScaler
-import glob
-import os
+from scipy import stats
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+from sklearn.neural_network import MLPClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score, classification_report
+from skl2onnx import convert_sklearn
+from skl2onnx.common.data_types import FloatTensorType
+# !pip install skl2onnx
 
-# Configuration parameters
-samples_per_session = 1000  # Approximate 10 seconds of data at 100Hz
-min_activity = 5  # Minimum activity threshold
-min_samples = samples_per_session // 2  # Minimum samples for valid session
+# Read the data and convert EMG columns to numeric
+df = pd.read_csv('emg_clean.csv')
+emg_columns = ['Pod1', 'Pod2', 'Pod3', 'Pod4', 'Pod5', 'Pod6', 'Pod7', 'Pod8']
+df[emg_columns] = df[emg_columns].apply(pd.to_numeric, errors='coerce')
 
-# Feature configuration
-feature_configs = {
-    'mean': {'fn': np.mean, 'desc': 'Average EMG amplitude'},
-    'std': {'fn': np.std, 'desc': 'Signal variation'},
-    'rms': {'fn': lambda x: np.sqrt(np.mean(x**2)), 'desc': 'Root mean square'},
-    'zl': {'fn': lambda x: ((x[:-1]*x[1:]<0).sum()), 'desc': 'Zero crossings'},
-    'wl': {'fn': lambda x: np.sum(np.abs(np.diff(x))), 'desc': 'Waveform length'},
-    'dmean': {'fn': lambda x: np.mean(np.diff(x)), 'desc': 'Mean of first derivative'},
-    'dstd': {'fn': lambda x: np.std(np.diff(x)), 'desc': 'Std of first derivative'}
-}
+# Add data validation
+print("Data types:", df[emg_columns].dtypes)
+print("\nMissing values:", df[emg_columns].isnull().sum())
+print("\nSample of numeric data:\n", df[emg_columns].head())
 
-# Data validation function
-def validate_emg_data(df):
-    """Validate EMG data format and content"""
-    expected_cols = ['Timestamp'] + [f'Pod{i}' for i in range(1,9)] + ['Label']
-    missing_cols = [col for col in expected_cols if col not in df.columns]
-    if missing_cols:
-        raise ValueError(f"Missing columns: {missing_cols}")
-    return True
-
-# 1) Load your data
-# Replace with your file in Google Drive or upload via Colab UI
-file_list = glob.glob('*_RAW.csv')  # or provide the full path
-
-dfs = []
-for file in file_list:
-    label = os.path.splitext(os.path.basename(file))[0].replace('_RAW', '')  # e.g., 'Fist'
-    df = pd.read_csv(file, parse_dates=['Timestamp'])
-    df['Label'] = label
-    dfs.append(df)
-
-# Combine all into one DataFrame
-df = pd.concat(dfs, ignore_index=True)
-
-# Expect columns: ['Timestamp', 'EMG01',..., 'EMG08', 'Label']
-
-# 2) Segment into fixed-size sessions with validation
-sessions = []
-for label, group in df.groupby('Label'):
-    # Validate data format
-    validate_emg_data(group)
+# Function to compute features for a window of EMG data
+def compute_features(window):
+    features = []
     
-    # Calculate activity level using all EMG channels
-    signal_sum = np.abs(group.filter(regex='Pod')).sum(axis=1)
+    # Verify data type
+    if not np.issubdtype(window.dtype, np.number):
+        raise TypeError(f"Expected numeric data, got {window.dtype}")
     
-    # Split into chunks of samples_per_session
-    n_samples = len(group)
-    for i in range(0, n_samples, samples_per_session):
-        chunk = group.iloc[i:i + samples_per_session]
+    # For each channel
+    for channel in range(8):
+        signal = window[:, channel]
         
-        # Only keep chunks with sufficient samples and activity
-        chunk_activity = signal_sum.iloc[i:i + samples_per_session]
-        if len(chunk) >= min_samples and chunk_activity.mean() > min_activity:
-            sessions.append((label, chunk))
-
-print(f"Found {len(sessions)} sessions:")
-for label in df['Label'].unique():
-    count = sum(1 for l, _ in sessions if l == label)
-    print(f"- {label}: {count} sessions")
-
-# 3) Keep only the active parts of each session
-def trim_inner(group):
-    if len(group) < samples_per_session // 2:
-        print(f"Session too short: {len(group)} samples")
-        return None
+        # Mean Absolute Value (MAV)
+        mav = np.mean(np.abs(signal))
+        
+        # Waveform Length (WL)
+        wl = np.sum(np.abs(np.diff(signal)))
+        
+        # Zero Crossings (ZC)
+        zc = np.sum(np.diff(np.signbit(signal)).astype(int))
+        
+        # Slope Sign Changes (SSC)
+        diff = np.diff(signal)
+        ssc = np.sum((diff[:-1] * diff[1:]) < 0)
+        
+        # Root Mean Square (RMS)
+        rms = np.sqrt(np.mean(signal**2))
+        
+        # Standard Deviation (STD)
+        std = np.std(signal)
+        
+        features.extend([mav, wl, zc, ssc, rms, std])
     
-    # Keep the most active 80% of the session
-    activity = np.abs(group.filter(regex='Pod')).sum(axis=1)
-    threshold = np.percentile(activity, 20)  # Cut bottom 20%
-    return group[activity >= threshold]
+    return features
 
-# Filter out None results from trimming
-trimmed = []
-for lab, g in sessions:
-    trimmed_group = trim_inner(g)
-    if trimmed_group is not None and len(trimmed_group) > 0:
-        trimmed.append((lab, trimmed_group))
-
-print(f"\nTotal valid sessions after trimming: {len(trimmed)}")
-print("Sessions per label after trimming:")
-for label in df['Label'].unique():
-    count = sum(1 for l, _ in trimmed if l == label)
-    print(f"- {label}: {count} sessions")
-
-# 4) Feature engineering per session
-feature_list = []
-for lab, grp in trimmed:
-    # Use Pod1-Pod8 instead of EMG
-    vals = grp.filter(regex='Pod').values  # shape (n_samples, 8)
-    features = {'Label': lab}
+# Function to create windows and extract features
+def prepare_dataset(df, window_size_ms=250):
+    # Convert index to time assuming 70Hz sampling rate
+    time_per_sample = 1000/70  # in milliseconds
     
-    # Per-channel features
-    for ch in range(vals.shape[1]):
-        x = vals[:,ch]
-        features[f'CH{ch+1}_mean'] = np.mean(x)
-        features[f'CH{ch+1}_std']  = np.std(x)
-        features[f'CH{ch+1}_rms']  = np.sqrt(np.mean(x**2))
-        features[f'CH{ch+1}_zl']   = ((x[:-1]*x[1:]<0).sum())  # zero crossings
-        features[f'CH{ch+1}_wl']   = np.sum(np.abs(np.diff(x)))  # waveform length
-        dx = np.diff(x)
-        features[f'CH{ch+1}_dmean'] = np.mean(dx)
-        features[f'CH{ch+1}_dstd']  = np.std(dx)
-    feature_list.append(features)
+    # Ensure EMG columns are numeric
+    emg_columns = ['Pod1', 'Pod2', 'Pod3', 'Pod4', 'Pod5', 'Pod6', 'Pod7', 'Pod8']
+    df[emg_columns] = df[emg_columns].astype(float)
+    
+    # Group by label
+    groups = df.groupby('Label')
+    
+    X = []
+    y = []
+    
+    for label, group in groups:
+        # Convert group to numpy array for EMG channels
+        emg_data = group[emg_columns].values.astype(float)  # Explicit conversion to float
+        
+        # Create windows
+        n_samples = len(emg_data)
+        samples_per_window = int(window_size_ms / time_per_sample)
+        
+        for i in range(0, n_samples - samples_per_window, samples_per_window):
+            window = emg_data[i:i+samples_per_window]
+            if len(window) == samples_per_window:  # ensure complete window
+                features = compute_features(window)
+                X.append(features)
+                y.append(label)
+    
+    return np.array(X), np.array(y)
 
-# Add debug print to check feature extraction
-features_df = pd.DataFrame(feature_list)
-print(f"\nExtracted features shape: {features_df.shape}")
-print("Columns:", features_df.columns.tolist())
+# Prepare the dataset
+X, y = prepare_dataset(df)
 
-# 5) Feature scaling
-if features_df.empty:
-    print("No features extracted. Check your session segmentation and input files.")
-else:
-    scaler = StandardScaler()
-    scaled = pd.DataFrame(
-        scaler.fit_transform(features_df.drop('Label', axis=1)),
-        columns=features_df.columns.drop('Label')
-    )
-    scaled['Label'] = features_df['Label'].values
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # 6) Save to CSV for ANN training
-    features_df.to_csv('emg_features_raw.csv', index=False)
-    scaled.to_csv('emg_features_scaled.csv', index=False)
+# Scale the features
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled = scaler.transform(X_test)
 
-    # Preview
-    print(features_df.head(), scaled.head())
+# Create and train the MLP
+mlp = MLPClassifier(hidden_layer_sizes=(100, 50), 
+                    max_iter=1000, 
+                    activation='relu',
+                    solver='adam',
+                    random_state=42)
+
+mlp.fit(X_train_scaled, y_train)
+
+# Make predictions
+y_pred_train = mlp.predict(X_train_scaled)
+y_pred_test = mlp.predict(X_test_scaled)
+
+# Calculate F1 scores
+f1_train_weighted = f1_score(y_train, y_pred_train, average='weighted')
+f1_test_weighted = f1_score(y_test, y_pred_test, average='weighted')
+
+# Print weighted F1 scores
+print("Weighted F1 Scores:")
+print(f"Training F1: {f1_train_weighted:.3f}")
+print(f"Testing F1: {f1_test_weighted:.3f}")
+
+# Print detailed classification report
+print("\nDetailed Classification Report:")
+print("\nTraining Set:")
+print(classification_report(y_train, y_pred_train))
+print("\nTest Set:")
+print(classification_report(y_test, y_pred_test))
+
+# Optional: Plot F1 scores per class
+def plot_f1_scores(y_true, y_pred, title):
+    report = classification_report(y_true, y_pred, output_dict=True)
+    classes = [key for key in report.keys() if key not in ['accuracy', 'macro avg', 'weighted avg']]
+    f1_scores = [report[cls]['f1-score'] for cls in classes]
+    
+    plt.figure(figsize=(8, 4))
+    plt.bar(classes, f1_scores)
+    plt.title(f'F1 Scores by Class - {title}')
+    plt.ylabel('F1 Score')
+    plt.ylim(0, 1)
+    plt.show()
+
+# Plot F1 scores
+plot_f1_scores(y_test, y_pred_test, 'Test Set')
+
+# Export model to ONNX
+
+# Define the input type for the model
+initial_type = [('float_input', FloatTensorType([None, X_train.shape[1]]))]
+
+# Convert the model to ONNX
+onx = convert_sklearn(mlp, initial_types=initial_type)
+
+# Save the model
+model_path = 'emg_classifier.onnx'
+with open(model_path, "wb") as f:
+    f.write(onx.SerializeToString())
+
+print(f"\nModel saved as: {model_path}")
