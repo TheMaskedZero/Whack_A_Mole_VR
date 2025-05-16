@@ -48,7 +48,7 @@ public class AnimationPrompter : MonoBehaviour
     public void TriggerDefaultAnimationState()
     {
         //if (Time.time - timeSinceAnimationTriggered > 2f)
-        animator.Play("Rest_Position");
+        animator.Play("Armature|Rest Position");
         //tactorConnector.TriggerDefaultStateFeedback();
         timeSinceAnimationTriggered = Time.time;
     }
@@ -56,7 +56,7 @@ public class AnimationPrompter : MonoBehaviour
     public void TriggerGraspAnimationState()
     {
         //if (Time.time - timeSinceAnimationTriggered > 2f)
-        animator.Play("power");
+        animator.Play("Armature|power");
         //tactorConnector.TriggerGraspingStateFeedback();
         timeSinceAnimationTriggered = Time.time;
     }
@@ -64,7 +64,7 @@ public class AnimationPrompter : MonoBehaviour
     public void TriggerPinchAnimationState()
     {
         //if (Time.time - timeSinceAnimationTriggered > 2f)
-        animator.Play("pinch_003");
+        animator.Play("Armature|pinch3_003");
         //tactorConnector.TriggerPinchingStateFeedback():
         timeSinceAnimationTriggered = Time.time;
     }
