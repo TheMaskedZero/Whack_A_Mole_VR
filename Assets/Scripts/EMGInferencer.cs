@@ -29,6 +29,7 @@ public class EMGInferencer : MonoBehaviour
     private List<float> features;                   // Computed features for classification
     private float[] scalerMean;                     // StandardScaler mean values
     private float[] scalerScale;                    // StandardScaler scale values
+    private int[] lastEMGSample = null;
 
     // Debug and visualization
     [Header("Debug")]
@@ -137,7 +138,30 @@ public class EMGInferencer : MonoBehaviour
         var emgData = ThalmicMyo.emg;
         if (emgData != null && emgData.Length == 8)
         {
-            // Add new EMG data to buffer
+            //Check whether EMG data is different than the previous sample
+            if (lastEMGSample == null || !emgData.SequenceEqual(lastEmgSample))
+            {
+                lastEmgSample = (int[])emgData.Clone(); // Update lastEmgSample
+
+                // Add new EMG data to buffer
+                emgBuffer.Enqueue((int[])emgData.Clone());
+
+                // Keep buffer size limited to window size
+                while (emgBuffer.Count > WINDOW_SIZE)
+                {
+                    emgBuffer.Dequeue();
+                }
+            }
+
+            // When we have enough samples, compute features and run inference
+            if(emgBuffer.Count == WINDOW_SIZE)
+            {
+                isPredicting = true;
+                RunInference();
+                emgBuffer.Clear();
+
+            }
+           /* // Add new EMG data to buffer
             emgBuffer.Enqueue((int[])emgData.Clone());
 
             // Keep buffer size limited to window size
@@ -152,7 +176,7 @@ public class EMGInferencer : MonoBehaviour
                 isPredicting = true;  // Raise the flag
                 RunInference();
                 
-            }
+            }*/
         }
     }
 
