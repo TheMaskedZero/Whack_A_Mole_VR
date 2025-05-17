@@ -139,9 +139,9 @@ public class EMGInferencer : MonoBehaviour
         if (emgData != null && emgData.Length == 8)
         {
             //Check whether EMG data is different than the previous sample
-            if (lastEMGSample == null || !emgData.SequenceEqual(lastEmgSample))
+            if (lastEMGSample == null || !emgData.SequenceEqual(lastEMGSample))
             {
-                lastEmgSample = (int[])emgData.Clone(); // Update lastEmgSample
+                lastEMGSample = (int[])emgData.Clone(); // Update lastEmgSample
 
                 // Add new EMG data to buffer
                 emgBuffer.Enqueue((int[])emgData.Clone());
