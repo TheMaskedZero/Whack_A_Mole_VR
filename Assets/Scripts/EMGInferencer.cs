@@ -47,6 +47,11 @@ public class EMGInferencer : MonoBehaviour
     [Header("UI Elements")]
     public Text predictionText;  // Add this field for the UI text component
 
+    // Add these fields at the top of the class with other private fields
+    private Queue<string> predictionHistory = new Queue<string>();
+    private const int PREDICTION_POOL_SIZE = 5;
+    private string lastStablePrediction = "Waiting for data...";
+
     /// <summary>
     /// Initializes the EMG processing pipeline, loads the model and scaler parameters.
     /// </summary>
@@ -154,10 +159,12 @@ public class EMGInferencer : MonoBehaviour
             }
 
             // When we have enough samples, compute features and run inference
-            if(emgBuffer.Count == WINDOW_SIZE)
+            if (emgBuffer.Count == WINDOW_SIZE)
             {
                 isPredicting = true;
                 RunInference();
+            
+
                 // Instead of clearing the entire buffer, remove half of the samples
                 int samplesToRemove = WINDOW_SIZE / 2;
                 for (int i = 0; i < samplesToRemove; i++)
@@ -165,6 +172,8 @@ public class EMGInferencer : MonoBehaviour
                     emgBuffer.Dequeue();
                 }
                 isPredicting = false;
+
+                
             }
            /* // Add new EMG data to buffer
             emgBuffer.Enqueue((int[])emgData.Clone());
@@ -207,10 +216,7 @@ public class EMGInferencer : MonoBehaviour
         }
 
         // Log first sample of EMG data
-        if (emgArray.Length > 0)
-        {
-            // Debug.Log($"First EMG sample value(s): [{string.Join(", ", emgArray[0])}]");
-        }
+       
 
         // Compute features
         features.Clear();
@@ -269,16 +275,44 @@ public class EMGInferencer : MonoBehaviour
             
             // Interpret results
             int predictedClass = System.Array.IndexOf(probabilities, probabilities.Max());
-            currentGesture = gestureLabels[predictedClass];
-            currentConfidence = probabilities[predictedClass];
-
-            // Update UI
-            if (predictionText != null)
-            {
-                predictionText.text = $"Gesture: {currentGesture}\nConfidence: {currentConfidence:P2}";
-            }
             
-            Debug.Log($"Prediction: {currentGesture} (confidence: {currentConfidence:F4})");
+            // After getting the prediction results:
+            if (predictedClass >= 0 && predictedClass < gestureLabels.Length)
+            {
+                currentGesture = gestureLabels[predictedClass];
+                currentConfidence = probabilities[predictedClass];
+
+                // Add to prediction history
+                predictionHistory.Enqueue(currentGesture);
+                if (predictionHistory.Count > PREDICTION_POOL_SIZE)
+                {
+                    predictionHistory.Dequeue();
+                }
+
+                // Get most common prediction from the pool
+                if (predictionHistory.Count == PREDICTION_POOL_SIZE)
+                {
+                    var mostCommon = predictionHistory
+                        .GroupBy(x => x)
+                        .OrderByDescending(g => g.Count())
+                        .First();
+
+                    // Only update if the most common prediction has occurred at least twice
+                    if (mostCommon.Count() >= 2)
+                    {
+                        lastStablePrediction = mostCommon.Key;
+                    }
+                }
+
+                // Update UI with the stable prediction
+                if (predictionText != null)
+                {
+                    predictionText.text = $"Gesture: {lastStablePrediction}\nConfidence: {currentConfidence:P2}";
+                }
+                
+                Debug.Log($"Raw Prediction: {currentGesture} (confidence: {currentConfidence:F4})");
+                Debug.Log($"Stable Prediction: {lastStablePrediction}");
+            }
         }
         catch (System.Exception e)
         {
