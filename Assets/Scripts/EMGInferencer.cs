@@ -158,8 +158,13 @@ public class EMGInferencer : MonoBehaviour
             {
                 isPredicting = true;
                 RunInference();
-                emgBuffer.Clear();
-
+                // Instead of clearing the entire buffer, remove half of the samples
+                int samplesToRemove = WINDOW_SIZE / 2;
+                for (int i = 0; i < samplesToRemove; i++)
+                {
+                    emgBuffer.Dequeue();
+                }
+                isPredicting = false;
             }
            /* // Add new EMG data to buffer
             emgBuffer.Enqueue((int[])emgData.Clone());
@@ -192,6 +197,15 @@ public class EMGInferencer : MonoBehaviour
         var window = new float[WINDOW_SIZE, 8];
         var emgArray = emgBuffer.ToArray();
         
+        // Populate the window with EMG data
+        for (int i = 0; i < emgArray.Length; i++)
+        {
+            for (int channel = 0; channel < 8; channel++)
+            {
+                window[i, channel] = emgArray[i][channel];
+            }
+        }
+
         // Log first sample of EMG data
         if (emgArray.Length > 0)
         {
