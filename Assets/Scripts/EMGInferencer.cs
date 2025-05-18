@@ -17,6 +17,14 @@ public class EMGInferencer : MonoBehaviour
     private IWorker worker;                         // Sentis worker for model execution
     private Model runtimeModel;                     // Runtime representation of the ONNX model
 
+    [Header("Model Classification Thresholds")]
+    [Range(0.0f, 1.0f)]
+    [SerializeField] private float restingThreshold;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] private float pinchThreshold;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] private float graspThreshold;
+
     // Classification labels
     private readonly string[] gestureLabels = new string[] { "Fist", "Pinch", "Resting" };
 
@@ -275,6 +283,24 @@ public class EMGInferencer : MonoBehaviour
             
             // Interpret results
             int predictedClass = System.Array.IndexOf(probabilities, probabilities.Max());
+            float maxProb = probabilities.Max();
+
+            if (predictedClass == 2 && maxProb < restingThreshold)
+            {
+                Debug.Log("Resting predicted, but below threshold.");
+                return;
+            }
+
+            if (predictedClass == 0 && maxProb < graspThreshold)
+            {
+                Debug.Log("Grasp detected, but below threshold.");
+                return;
+            }
+            else if (predictedClass == 1 && maxProb < pinchThreshold)
+            {
+                Debug.Log("Pinch detected, but below threshold.");
+                return;
+            }
             
             // After getting the prediction results:
             if (predictedClass >= 0 && predictedClass < gestureLabels.Length)
