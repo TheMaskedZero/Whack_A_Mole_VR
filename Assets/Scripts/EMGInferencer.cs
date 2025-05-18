@@ -289,25 +289,37 @@ public class EMGInferencer : MonoBehaviour
 
             if (predictedClass == 2 && maxProb < restingThreshold)
             {
-                Debug.Log("Resting predicted, but below threshold.");
+                if (showDebugInfo == true)
+                {
+                    Debug.Log("Resting predicted, but below threshold.");
+                }
                 return;
             }
 
             if ((predictedClass == 0 || predictedClass == 1) && maxProb < uncertainThreshold)
             {
-                Debug.Log($"Low confidence in class: {maxProb} detection. Defaulting to resting.");
+                if (showDebugInfo == true)
+                {
+                    Debug.Log($"Low confidence in class: {maxProb} detection. Defaulting to resting.");
+                }
                 predictedClass = 2;
                 maxProb = probabilities[2];
             }
 
             if (predictedClass == 0 && maxProb < graspThreshold)
             {
-                Debug.Log("Grasp detected, but below threshold.");
+                if (showDebugInfo == true)
+                {
+                    Debug.Log("Grasp detected, but below threshold.");
+                }
                 return;
             }
             else if (predictedClass == 1 && maxProb < pinchThreshold)
             {
-                Debug.Log("Pinch detected, but below threshold.");
+                if (showDebugInfo == true)
+                {
+                    Debug.Log("Pinch detected, but below threshold.");
+                }
                 return;
             }
             
