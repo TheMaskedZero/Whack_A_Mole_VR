@@ -24,6 +24,8 @@ public class EMGInferencer : MonoBehaviour
     [SerializeField] private float pinchThreshold;
     [Range(0.0f, 1.0f)]
     [SerializeField] private float graspThreshold;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] private float uncertainThreshold;
 
     // Classification labels
     private readonly string[] gestureLabels = new string[] { "Fist", "Pinch", "Resting" };
@@ -289,6 +291,13 @@ public class EMGInferencer : MonoBehaviour
             {
                 Debug.Log("Resting predicted, but below threshold.");
                 return;
+            }
+
+            if ((predictedClass == 0 || predictedClass == 1) && maxProb < uncertainThreshold)
+            {
+                Debug.Log($"Low confidence in class: {maxProb} detection. Defaulting to resting.");
+                predictedClass = 2;
+                maxProb = probabilities[2];
             }
 
             if (predictedClass == 0 && maxProb < graspThreshold)
