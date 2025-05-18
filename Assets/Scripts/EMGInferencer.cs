@@ -73,7 +73,7 @@ public class EMGInferencer : MonoBehaviour
 
         // Set the exact input/output tensor names used by the model
         inputTensorName = "input";
-        outputTensorName = "prob";
+        outputTensorName = "output";
         
         Debug.Log($"Using input tensor name: {inputTensorName}");
         Debug.Log($"Using output tensor name: {outputTensorName}");
