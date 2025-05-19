@@ -17,6 +17,8 @@ public class EMGInferencer : MonoBehaviour
     private IWorker worker;                         // Sentis worker for model execution
     private Model runtimeModel;                     // Runtime representation of the ONNX model
 
+    [SerializeField] private TactorConnector tactorInterface;       // Reference to the TactorInterface for feedback
+
     [Header("Model Classification Thresholds")]
     [Range(0.0f, 1.0f)]
     [SerializeField] private float restingThreshold;
@@ -348,6 +350,20 @@ public class EMGInferencer : MonoBehaviour
                     if (mostCommon.Count() >= 2)
                     {
                         lastStablePrediction = mostCommon.Key;
+                        switch (lastStablePrediction)
+                        {
+                            case "Fist":
+                                tactorInterface.TriggerGraspingStateFeedback();
+                                break;
+                            case "Pinch":
+                                tactorInterface.TriggerPinchingStateFeedback();
+                                break;
+                            case "Resting":
+                                tactorInterface.TriggerRestingStateFeedback();
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
 

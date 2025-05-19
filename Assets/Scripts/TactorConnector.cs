@@ -301,6 +301,9 @@ public class TactorConnector : MonoBehaviour
                 break;
             case "Resting":
                 break;
+            default:
+                Debug.LogError("Invalid state for TactorConnector: " + lastState);
+                break;
 
         }
 
