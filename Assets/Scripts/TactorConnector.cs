@@ -10,18 +10,18 @@ public class TactorConnector : MonoBehaviour
 
     [SerializeField] private string comPort = "COM4"; // Change this to your actual port
 
-    [TextArea(10,20)]
+    /*[TextArea(10,20)]
     [SerializeField] string controls = "Numbers 1-5 (not numpad) applies settings to tactor 1-5.\n" +
     "Q applies gain and frequence settings to all tactors.\n" +
     "W applies ramping gain on all tactors.\n" +
     "E applies ramping frequencies on all tactors.\n" +
     "Each tactor has individual settings below. These should update at runtime, once applied using one of the command keys mentioned here.\n";
-    //For testing purposes, "Z" pulses tactor 1 with duration = pulseDuration and delay = delay
+    //For testing purposes, "Z" pulses tactor 1 with duration = pulseDuration and delay = delay*/
     
-    [TextArea(5,20)]
+    /*[TextArea(5,20)]
     [SerializeField] string numbersGuide = "Valid Gain Range: 1-255\n" +
     "Valid Frequency Range: 300-3550\n";
-    //Duration is in ms. Minimum 1.
+    //Duration is in ms. Minimum 1.*/
 
     // Vibration pattern setup for gestures
     [Header("Vibration Patterns for Gestures")]
@@ -30,10 +30,6 @@ public class TactorConnector : MonoBehaviour
     [SerializeField] private int pinchGain = 120;
     [SerializeField] private int pinchFrequency = 500;
     [SerializeField] private int restingRampTime = 1000;
-    private int graspToRestingRampStart;
-    private int pinchToRestingRampStart;
-    private int restingRampEnd = 1;
-    private string lastState;
     
     [Header("Pinch Tactors")]
     [SerializeField] private bool enableT1Pinch = true;
@@ -104,6 +100,11 @@ public class TactorConnector : MonoBehaviour
     [SerializeField] private int ramp5FreqEnd = 3550;
     [SerializeField] private int ramp5Duration = 1000;
     [SerializeField] private int ramp5Func = 1;
+
+    private int graspToRestingRampStart;
+    private int pinchToRestingRampStart;
+    private int restingRampEnd = 1;
+    private string lastState;
 
 
     void Awake() // Don't mind this. Just making sure that the TextAreas in the inspector load properly.
@@ -223,14 +224,14 @@ public class TactorConnector : MonoBehaviour
     }
 
     // This is just for testing
-    /*public void RampAllGains() // Ramps the gain of all 5 tactors from rampGainStart to rampGainEnd
+    public void RampAllGainsDefault() // Ramps the gain of all 5 tactors from rampGainStart to rampGainEnd
     {
         RampGain(1, ramp1GainStart, ramp1GainEnd, ramp1Duration, ramp1Func);
         RampGain(2, ramp2GainStart, ramp2GainEnd, ramp2Duration, ramp2Func);
         RampGain(3, ramp3GainStart, ramp3GainEnd, ramp3Duration, ramp3Func);
         RampGain(4, ramp4GainStart, ramp4GainEnd, ramp4Duration, ramp4Func);
         RampGain(5, ramp5GainStart, ramp5GainEnd, ramp5Duration, ramp5Func);
-    }*/
+    }
 
     public void RampAllFrequencies() // Ramps the frequencies of all 5 tactors from rampFreqStart to rampFreqEnd
     {
