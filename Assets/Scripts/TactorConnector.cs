@@ -109,8 +109,8 @@ public class TactorConnector : MonoBehaviour
 
     void Awake() // Don't mind this. Just making sure that the TextAreas in the inspector load properly.
     {
-        controls = controls;
-        numbersGuide = numbersGuide;
+        //controls = controls;
+        //numbersGuide = numbersGuide;
         lastState = "";
     }
 
@@ -154,7 +154,7 @@ public class TactorConnector : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha5)) ApplySettingsToTactor(5, gain5, frequency5);
 
         if (Input.GetKeyDown(KeyCode.Q)) ApplyAllStaticSettings();
-        if (Input.GetKeyDown(KeyCode.W)) RampAllGains();
+        if (Input.GetKeyDown(KeyCode.W)) RampAllGainsDefault();
         if (Input.GetKeyDown(KeyCode.E)) RampAllFrequencies();
         if (Input.GetKeyDown(KeyCode.Z)) TdkInterface.Pulse(connectedBoardId, 1, pulseDuration, delay); // pulse tactor1
         if (Input.GetKeyDown(KeyCode.Space))
