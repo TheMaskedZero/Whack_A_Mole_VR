@@ -127,6 +127,13 @@ public class TactorConnector : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W)) RampAllGains();
         if (Input.GetKeyDown(KeyCode.E)) RampAllFrequencies();
         if (Input.GetKeyDown(KeyCode.Z)) TdkInterface.Pulse(connectedBoardId, 1, pulseDuration, delay); // pulse tactor1
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                TdkInterface.Pulse(connectedBoardId, i, pulseDuration, delay);
+            }
+        }
     }
 
     void OnApplicationQuit() // Shut down the connection to the tactor software when application closes.
