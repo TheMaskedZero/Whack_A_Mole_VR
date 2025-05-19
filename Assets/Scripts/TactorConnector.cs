@@ -23,6 +23,32 @@ public class TactorConnector : MonoBehaviour
     "Valid Frequency Range: 300-3550\n";
     //Duration is in ms. Minimum 1.
 
+    // Vibration pattern setup for gestures
+    [Header("Vibration Patterns for Gestures")]
+    [SerializeField] private int graspGain = 200;
+    [SerializeField] private int graspFrequency = 500;
+    [SerializeField] private int pinchGain = 120;
+    [SerializeField] private int pinchFrequency = 500;
+    [SerializeField] private int restingRampTime = 1000;
+    private int graspToRestingRampStart;
+    private int pinchToRestingRampStart;
+    private int restingRampEnd = 1;
+    private string lastState;
+    
+    [Header("Pinch Tactors")]
+    [SerializeField] private bool enableT1Pinch = true;
+    [SerializeField] private bool enableT2Pinch = true;
+    [SerializeField] private bool enableT3Pinch = true;
+    [SerializeField] private bool enableT4Pinch = true;
+    [SerializeField] private bool enableT5Pinch = true;
+
+    [Header("Grasp Tactors")]
+    [SerializeField] private bool enableT1Grasp = true;
+    [SerializeField] private bool enableT2Grasp = true;
+    [SerializeField] private bool enableT3Grasp = true;
+    [SerializeField] private bool enableT4Grasp = true;
+    [SerializeField] private bool enableT5Grasp = true;
+
     // Below are variables for each tactor, editable from the inspector.
     // ---------------- Tactor 1 ----------------
     [Header("Tactor 1")]
@@ -84,6 +110,7 @@ public class TactorConnector : MonoBehaviour
     {
         controls = controls;
         numbersGuide = numbersGuide;
+        lastState = "";
     }
 
 
@@ -108,6 +135,8 @@ public class TactorConnector : MonoBehaviour
 
     void Update() // Here we just listen for key presses to trigger various commands.
     {
+        graspToRestingRampStart = graspGain;
+        pinchToRestingRampStart = pinchGain;
         // Press spacebar to pulse tactor 1
         //if (connectedBoardId >= 0 && Input.GetKeyDown(KeyCode.Space))
         //{
@@ -184,14 +213,24 @@ public class TactorConnector : MonoBehaviour
         ApplySettingsToTactor(5, gain5, frequency5);
     }
 
-    public void RampAllGains() // Ramps the gain of all 5 tactors from rampGainStart to rampGainEnd
+    public void RampAllGains(int rampGainStart, int rampGainEnd, int rampDuration, int rampFunc) // Ramps the gain of all 5 tactors from rampGainStart to rampGainEnd
+    {
+        RampGain(1, rampGainStart, rampGainEnd, rampDuration, rampFunc);
+        RampGain(2, rampGainStart, rampGainEnd, rampDuration, rampFunc);
+        RampGain(3, rampGainStart, rampGainEnd, rampDuration, rampFunc);
+        RampGain(4, rampGainStart, rampGainEnd, rampDuration, rampFunc);
+        RampGain(5, rampGainStart, rampGainEnd, rampDuration, rampFunc);
+    }
+
+    // This is just for testing
+    /*public void RampAllGains() // Ramps the gain of all 5 tactors from rampGainStart to rampGainEnd
     {
         RampGain(1, ramp1GainStart, ramp1GainEnd, ramp1Duration, ramp1Func);
         RampGain(2, ramp2GainStart, ramp2GainEnd, ramp2Duration, ramp2Func);
         RampGain(3, ramp3GainStart, ramp3GainEnd, ramp3Duration, ramp3Func);
         RampGain(4, ramp4GainStart, ramp4GainEnd, ramp4Duration, ramp4Func);
         RampGain(5, ramp5GainStart, ramp5GainEnd, ramp5Duration, ramp5Func);
-    }
+    }*/
 
     public void RampAllFrequencies() // Ramps the frequencies of all 5 tactors from rampFreqStart to rampFreqEnd
     {
@@ -205,49 +244,66 @@ public class TactorConnector : MonoBehaviour
     public void TriggerGraspingStateFeedback()
     {
         // Change values here to match our intended tactile feedback
-        ApplySettingsToTactor(1, gain1, frequency1);
-        ApplySettingsToTactor(2, gain2, frequency2);
-        ApplySettingsToTactor(2, gain2, frequency3);
-        ApplySettingsToTactor(2, gain2, frequency4);
-        ApplySettingsToTactor(2, gain2, frequency5);
+        ApplySettingsToTactor(1, graspGain, graspFrequency);
+        ApplySettingsToTactor(2, graspGain, graspFrequency);
+        ApplySettingsToTactor(2, graspGain, graspFrequency);
+        ApplySettingsToTactor(2, graspGain, graspFrequency);
+        ApplySettingsToTactor(2, graspGain, graspFrequency);
 
-        TdkInterface.Pulse(connectedBoardId, 1, 250, 0);
-        TdkInterface.Pulse(connectedBoardId, 2, 250, 0);
-        TdkInterface.Pulse(connectedBoardId, 3, 250, 0);
-        TdkInterface.Pulse(connectedBoardId, 4, 250, 0);
-        TdkInterface.Pulse(connectedBoardId, 5, 250, 0);
+        if (enableT1Grasp) TdkInterface.Pulse(connectedBoardId, 1, 250, 0);
+        if (enableT2Grasp) TdkInterface.Pulse(connectedBoardId, 2, 250, 0);
+        if (enableT3Grasp) TdkInterface.Pulse(connectedBoardId, 3, 250, 0);
+        if (enableT4Grasp) TdkInterface.Pulse(connectedBoardId, 4, 250, 0);
+        if (enableT5Grasp) TdkInterface.Pulse(connectedBoardId, 5, 250, 0);
+
+        lastState = "Grasping";
     }
 
     public void TriggerPinchingStateFeedback()
     {
         // Change values here to match our intended tactile feedback
-        ApplySettingsToTactor(1, gain1, frequency1);
-        ApplySettingsToTactor(2, gain2, frequency2);
-        ApplySettingsToTactor(2, gain2, frequency3);
-        ApplySettingsToTactor(2, gain2, frequency4);
-        ApplySettingsToTactor(2, gain2, frequency5);
+        ApplySettingsToTactor(1, pinchGain, pinchFrequency);
+        ApplySettingsToTactor(2, pinchGain, pinchFrequency);
+        ApplySettingsToTactor(3, pinchGain, pinchFrequency);
+        ApplySettingsToTactor(4, pinchGain, pinchFrequency);
+        ApplySettingsToTactor(5, pinchGain, pinchFrequency);
 
-        TdkInterface.Pulse(connectedBoardId, 1, 250, 0);
-        TdkInterface.Pulse(connectedBoardId, 2, 250, 0);
-        TdkInterface.Pulse(connectedBoardId, 3, 250, 0);
-        TdkInterface.Pulse(connectedBoardId, 4, 250, 0);
-        TdkInterface.Pulse(connectedBoardId, 5, 250, 0);
+        if (enableT1Pinch) TdkInterface.Pulse(connectedBoardId, 1, 250, 0);
+        if (enableT2Pinch) TdkInterface.Pulse(connectedBoardId, 2, 250, 0);
+        if (enableT3Pinch) TdkInterface.Pulse(connectedBoardId, 3, 250, 0);
+        if (enableT4Pinch) TdkInterface.Pulse(connectedBoardId, 4, 250, 0);
+        if (enableT5Pinch) TdkInterface.Pulse(connectedBoardId, 5, 250, 0);
+
+        lastState = "Pinching";
     }
 
-    public void TriggerDefaultStateFeedback()
+    public void TriggerRestingStateFeedback()
     {
         // Change values here to match our intended tactile feedback
-        ApplySettingsToTactor(1, gain1, frequency1);
-        ApplySettingsToTactor(2, gain2, frequency2);
-        ApplySettingsToTactor(2, gain2, frequency3);
-        ApplySettingsToTactor(2, gain2, frequency4);
-        ApplySettingsToTactor(2, gain2, frequency5);
+        switch (lastState)
+        {
+            case "":
+                break;
+            case "Pinching":
+                if (enableT1Pinch) RampGain(1, pinchToRestingRampStart, restingRampEnd, restingRampTime, 1);
+                if (enableT2Pinch) RampGain(2, pinchToRestingRampStart, restingRampEnd, restingRampTime, 1);
+                if (enableT3Pinch) RampGain(3, pinchToRestingRampStart, restingRampEnd, restingRampTime, 1);
+                if (enableT4Pinch) RampGain(4, pinchToRestingRampStart, restingRampEnd, restingRampTime, 1);
+                if (enableT5Pinch) RampGain(5, pinchToRestingRampStart, restingRampEnd, restingRampTime, 1);
+                break;
+            case "Grasping":
+                if (enableT1Grasp) RampGain(1, graspToRestingRampStart, restingRampEnd, restingRampTime, 1);
+                if (enableT2Grasp) RampGain(2, graspToRestingRampStart, restingRampEnd, restingRampTime, 1);
+                if (enableT3Grasp) RampGain(3, graspToRestingRampStart, restingRampEnd, restingRampTime, 1);
+                if (enableT4Grasp) RampGain(4, graspToRestingRampStart, restingRampEnd, restingRampTime, 1);
+                if (enableT5Grasp) RampGain(5, graspToRestingRampStart, restingRampEnd, restingRampTime, 1);
+                break;
+            case "Resting":
+                break;
 
-        TdkInterface.Pulse(connectedBoardId, 1, 250, 0);
-        TdkInterface.Pulse(connectedBoardId, 2, 250, 0);
-        TdkInterface.Pulse(connectedBoardId, 3, 250, 0);
-        TdkInterface.Pulse(connectedBoardId, 4, 250, 0);
-        TdkInterface.Pulse(connectedBoardId, 5, 250, 0);
+        }
+
+        lastState = "Resting";
     }
 
     // In case we need to trigger tactors based on some variable at runtime.
