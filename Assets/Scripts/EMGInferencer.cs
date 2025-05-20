@@ -18,6 +18,7 @@ public class EMGInferencer : MonoBehaviour
     private Model runtimeModel;                     // Runtime representation of the ONNX model
 
     [SerializeField] private TactorConnector tactorInterface;       // Reference to the TactorInterface for feedback
+    [SerializeField] private WhackWithGesture whackingScript;
 
     [Header("Model Classification Thresholds")]
     [Range(0.0f, 1.0f)]
@@ -354,12 +355,15 @@ public class EMGInferencer : MonoBehaviour
                         {
                             case "Fist":
                                 tactorInterface.TriggerGraspingStateFeedback();
+                                whackingScript.WhackDatMoleOnDaNoggin("Fist");
                                 break;
                             case "Pinch":
                                 tactorInterface.TriggerPinchingStateFeedback();
+                                whackingScript.WhackDatMoleOnDaNoggin("Pinch");
                                 break;
                             case "Resting":
                                 tactorInterface.TriggerRestingStateFeedback();
+                                whackingScript.WhackDatMoleOnDaNoggin("Resting");
                                 break;
                             default:
                                 break;

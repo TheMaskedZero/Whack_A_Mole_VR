@@ -74,4 +74,9 @@ public class WhackWithGesture : MonoBehaviour
             //}
         }
     }
+
+    public void WhackDatMoleOnDaNoggin(string Gesture)
+    {
+        currentMole.PopMoleProgrammatically(Gesture);
+    }
 }
