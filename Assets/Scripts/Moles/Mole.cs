@@ -16,7 +16,7 @@ public abstract class Mole : MonoBehaviour
 {
     public enum MolePopAnswer {Ok, Fake, Expired, Disabled, Paused}
 
-    public enum MoleType {Target, DistractorLeft, DistractorRight}
+    public enum MoleType {Target,DistractorLeft,DistractorRight}
     public bool defaultVisibility = false;
 
     // The states may be reduced to 3 - 4 (by removing Popping, enabling...), however this could reduce the control over the Mole

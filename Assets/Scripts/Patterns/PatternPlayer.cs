@@ -170,28 +170,6 @@ public class PatternPlayer: MonoBehaviour
         // If the targetsList hasnt been initialized yet, return.
         if (patternInterface.GetTargetsList() == null) return;
 
-        // Check if any mole has been hit (in Popped state)
-        bool anyMolePopped = patternInterface.GetTargetsList()
-            .Any(mole => mole.Value.GetState() == Mole.States.Popped);
-
-        if (anyMolePopped)
-        {
-            // Clear all current moles and move to next step
-            var molesList = patternInterface.GetMolesList();
-            foreach (var mole in molesList.Values)
-            {
-                if (mole.GetState() == Mole.States.Enabled)
-                {
-                    mole.Disable();
-                }
-            }
-            patternInterface.ClearMolesList();
-            waitForDuration = -1f;
-            waitTimeLeft = 0f;
-            PlayStep();
-            return;
-        }
-
         // If there are still moles to be shot, return.
         // If there are no more moles left, continue.
         if (patternInterface.GetTargetsList().Count > 0) {
@@ -218,10 +196,10 @@ public class PatternPlayer: MonoBehaviour
             return;
         }
 
-        var currentMoles = patternInterface.GetMolesList();
+        var molesList = patternInterface.GetMolesList();
 
         // Clear all distractors.
-        foreach (var fake in currentMoles.Where(fake => fake.Value.IsFake() && fake.Value.GetState() == Mole.States.Enabled)) {
+        foreach (var fake in molesList.Where(fake => fake.Value.IsFake() && fake.Value.GetState() == Mole.States.Enabled)) {
             fake.Value.Disable();
         }
 
