@@ -156,21 +156,21 @@ public class DiskMole : Mole
     {
         Debug.Log(ShouldPerformanceFeedback());
         if (ShouldPerformanceFeedback()) {
-            if (moleType==Mole.MoleType.Target)
+            if (moleType == Mole.MoleType.Target)
             {
-                PlayAnimation("PopCorrectMole");  // Show positive feedback to users that shoot a correct moles, to make it clear this is a success
-               popVisual.startColor = enabledColor;
-               popVisual.Play();
+                PlayAnimation("PopCorrectMole");
+                popVisual.startColor = enabledColor;
+                popVisual.Play();
             }
             else
             {
-                PlayAnimation("PopWrongMole");    // Show negative feedback to users that shoot an incorrect moles, to make it clear this is a fail
+                PlayAnimation("PopWrongMole");
             }
         }
-        meshMaterial.color=disabledColor;
-        meshMaterial.mainTexture=textureDisabled;
+        meshMaterial.color = disabledColor;
+        meshMaterial.mainTexture = textureDisabled;
         PlaySound(popSound);
-        //base.PlayPop(); // we cannot change to popped state, this breaks WAIT:HIT for some reason.
+        base.PlayPop(); // Re-enable this line to transition to Popped state
     }
 
     protected override void PlayReset()
