@@ -250,6 +250,26 @@ public abstract class Mole : MonoBehaviour
         PlayHoverLeave();
     }
 
+    public void PopMoleProgrammatically()
+    {
+        Debug.Log("PopMoleProgrammatically triggered");
+        PlayPop();
+    }
+
+    public string CheckMoleActive()
+    {
+        if (state == States.Enabled)
+        {
+            string moleState = "Enabled";
+            return moleState;
+        }
+        else
+        {
+            string moleState = "NotEnabled";
+            return moleState;
+        }
+    }
+
     public UnityEvent<bool, Mole> GetUpdateEvent()
     {
         return stateUpdateEvent;

@@ -5270,7 +5270,7 @@ GameObject:
   - component: {fileID: 2629298939869122304}
   - component: {fileID: 4089774825196620611}
   m_Layer: 0
-  m_Name: DiskMole
+  m_Name: DiskMole 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5331,12 +5331,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultVisibility: 0
   disableCooldown: 3
-  disabledColor: {r: 0.8235294, g: 0.8235294, b: 0.8235294, a: 0.77254903}
-  enabledColor: {r: 1, g: 0.97351444, b: 0, a: 1}
-  fakeEnabledColor: {r: 1, g: 0.59836286, b: 0, a: 1}
-  hoverColor: {r: 1, g: 0.02821736, b: 0, a: 1}
-  fakeHoverColor: {r: 1, g: 0, b: 0.6060066, a: 1}
-  popColor: {r: 0.09224081, g: 0, b: 1, a: 1}
+  disabledColor: {r: 0.8235294, g: 0.8235294, b: 0.8235294, a: 1}
+  enabledColor: {r: 0.43137255, g: 0.7490196, b: 0.23921569, a: 1}
+  fakeEnabledColor: {r: 0.37440854, g: 0.7264151, b: 0.2706924, a: 1}
+  hoverColor: {r: 0.67058825, g: 0.8784314, b: 0.5882353, a: 1}
+  fakeHoverColor: {r: 0.67058825, g: 0.8784314, b: 0.5882353, a: 1}
+  popColor: {r: 1, g: 1, b: 1, a: 1}
   textureEnabled: {fileID: 2800000, guid: 36ea2ae3da72dba49a98d2d221ee729e, type: 3}
   textureDisabled: {fileID: 2800000, guid: 952da8b1e2fcebb4f8b973928fb68edb, type: 3}
   distractorLeftTexture: {fileID: 2800000, guid: 9d495e5ae54cec048ae2745207379129,
