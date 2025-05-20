@@ -5332,7 +5332,7 @@ MonoBehaviour:
   defaultVisibility: 0
   disableCooldown: 3
   disabledColor: {r: 0.8235294, g: 0.8235294, b: 0.8235294, a: 0.77254903}
-  enabledColor: {r: 1, g: 0.97351444, b: 0, a: 1}
+  enabledColor: {r: 0.6037736, g: 0.6037736, b: 0.6037736, a: 1}
   fakeEnabledColor: {r: 1, g: 0.59836286, b: 0, a: 1}
   hoverColor: {r: 1, g: 0.02821736, b: 0, a: 1}
   fakeHoverColor: {r: 1, g: 0, b: 0.6060066, a: 1}

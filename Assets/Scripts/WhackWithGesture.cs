@@ -49,8 +49,28 @@ public class WhackWithGesture : MonoBehaviour
             //{
                 // Call Pop(...) in code, which under the hood calls PlayPop()
                 Debug.Log("Attempted to Pop Mole Programmatically");
-                currentMole.PopMoleProgrammatically();
-                currentMole = null;
+                currentMole.PopMoleProgrammatically("Fist"); // GREEN MOLE
+                //currentMole = null;
+            //}
+        }
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            //if (currentMole != null)
+            //{
+                // Call Pop(...) in code, which under the hood calls PlayPop()
+                Debug.Log("Attempted to Pop Mole Programmatically");
+                currentMole.PopMoleProgrammatically("Pinch"); // BLUE MOLE
+                //currentMole = null;
+            //}
+        }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            //if (currentMole != null)
+            //{
+                // Call Pop(...) in code, which under the hood calls PlayPop()
+                Debug.Log("Attempted to Pop Mole Programmatically");
+                currentMole.PopMoleProgrammatically("Resting"); // GRAY MOLE
+                //currentMole = null;
             //}
         }
     }

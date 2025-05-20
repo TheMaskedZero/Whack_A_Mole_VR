@@ -50,12 +50,13 @@ public abstract class Mole : MonoBehaviour
     private float disabledTimeLeft = 0f;
     private bool isOnDisabledCoolDown = false;
     private bool performanceFeedback = true;
-    private int activeMoleNumber;
+    private int activeTargetGesture;
+    private string[] targetGestures = new string[] {"Pinch", "Resting", "Fist", "Resting"};
 
     private void Awake() 
     {
         SetVisibility(defaultVisibility);
-        activeMoleNumber = 0;
+        activeTargetGesture = 0;
     }
 
     protected virtual void Start()
@@ -157,7 +158,16 @@ public abstract class Mole : MonoBehaviour
         expiringTime = expiringDuration;
         spawnOrder = moleSpawnOrder;
         ChangeState(States.Enabling);
+        if (type == MoleType.Target)
+        {
+            activeTargetGesture++;
+        }
 
+    }
+
+    public int GetActiveGesture()
+    {
+        return activeTargetGesture;
     }
 
     public void Disable()
@@ -253,10 +263,17 @@ public abstract class Mole : MonoBehaviour
         PlayHoverLeave();
     }
 
-    public void PopMoleProgrammatically()
+    public void PopMoleProgrammatically(string Gesture)
     {
+        string expectedGesture = targetGestures[activeTargetGesture % targetGestures.Length];
+
+        if (Gesture == expectedGesture)
+        {
+            PlayPop();
+        }
+
         Debug.Log("PopMoleProgrammatically triggered");
-        PlayPop();
+        //PlayPop();
     }
 
     public string CheckMoleActive()

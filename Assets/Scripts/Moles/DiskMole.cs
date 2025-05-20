@@ -99,8 +99,8 @@ public class DiskMole : Mole
         {
             meshMaterial.color = enabledColor;
             meshMaterial.mainTexture =  textureEnabled;
+            activeMoleNumber = base.GetActiveGesture();
             enabledColor = colorCycle[activeMoleNumber % colorCycle.Length];
-            activeMoleNumber++;
         }
         else if (moleType == Mole.MoleType.DistractorLeft)
         {
