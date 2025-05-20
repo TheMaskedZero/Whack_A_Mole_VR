@@ -40,8 +40,8 @@ public class EMGInferencer : MonoBehaviour
     // Data buffers and processing
     private Queue<int[]> emgBuffer;                 // Circular buffer for EMG samples
     private List<float> features;                   // Computed features for classification
-    private float[] scalerMean;                     // StandardScaler mean values
-    private float[] scalerScale;                    // StandardScaler scale values
+    private float[] scalerMin;                     // MinMaxScaler min values
+    private float[] scalerScale;                    // MinMaxScaler scale values
     private int[] lastEMGSample = null;
 
     // Debug and visualization
@@ -117,27 +117,26 @@ public class EMGInferencer : MonoBehaviour
             try
             {
                 var scalerParams = JsonUtility.FromJson<ScalerParams>(scalerParamsJson.text);
-                scalerMean = scalerParams.mean;
-                scalerScale = scalerParams.scale;
+                scalerMin = scalerParams.min_;
+                scalerScale = scalerParams.scale_;
                 Debug.Log($"Loaded scaler parameters successfully:");
-                Debug.Log($"Mean array length: {scalerMean.Length}");
+                Debug.Log($"Min array length: {scalerMin.Length}");
                 Debug.Log($"Scale array length: {scalerScale.Length}");
-                Debug.Log($"Sample values - Mean[0]: {scalerMean[0]}, Scale[0]: {scalerScale[0]}");
             }
             catch (System.Exception e)
             {
-                Debug.LogError($"Failed to load scaler parameters: {e.Message}\nStack trace: {e.StackTrace}");
-                // Initialize with zeros as fallback
-                scalerMean = new float[NUM_FEATURES];
-                scalerScale = Enumerable.Repeat(1f, NUM_FEATURES).ToArray();
+                Debug.LogError($"Failed to load scaler parameters: {e.Message}");
+                // Initialize with zeros and ones as fallback
+                scalerMin = new float[8];  // 8 EMG channels
+                scalerScale = Enumerable.Repeat(1f, 8).ToArray();
                 Debug.Log("Initialized fallback scaler parameters");
             }
         }
         else
         {
             Debug.LogWarning("No scaler parameters provided. Using default values.");
-            scalerMean = new float[NUM_FEATURES];
-            scalerScale = Enumerable.Repeat(1f, NUM_FEATURES).ToArray();
+            scalerMin = new float[8];  // 8 EMG channels
+            scalerScale = Enumerable.Repeat(1f, 8).ToArray();
         }
     }
 
@@ -231,44 +230,38 @@ public class EMGInferencer : MonoBehaviour
         // Log first sample of EMG data
        
 
-        // Compute features
+        // Normalize EMG data first
+        for (int i = 0; i < emgArray.Length; i++)
+        {
+            for (int channel = 0; channel < 8; channel++)
+            {
+                float normalizedValue = (emgArray[i][channel] - scalerMin[channel]) * scalerScale[channel];
+                window[i, channel] = normalizedValue;
+            }
+        }
+
+        // Compute features (no scaling needed now)
         features.Clear();
         for (int channel = 0; channel < 8; channel++)
         {
             var signal = GetChannelData(window, channel);
             
-            // Mean Absolute Value (MAV)
-            features.Add(signal.Select(x => Mathf.Abs(x)).Average());
-            
-            // Waveform Length (WL)
-            features.Add(GetWaveformLength(signal));
-            
-            // Zero Crossings (ZC)
-            features.Add(GetZeroCrossings(signal));
-            
-            // Slope Sign Changes (SSC)
-            features.Add(GetSlopeSignChanges(signal));
-            
-            // Root Mean Square (RMS)
-            features.Add(Mathf.Sqrt(signal.Select(x => x * x).Average()));
-            
-            // Standard Deviation (STD)
-            features.Add(GetStandardDeviation(signal));
+            features.Add(signal.Select(x => Mathf.Abs(x)).Average());           // MAV
+            features.Add(GetWaveformLength(signal));                            // WL
+            features.Add(GetZeroCrossings(signal));                            // ZC
+            features.Add(GetSlopeSignChanges(signal));                         // SSC
+            features.Add(Mathf.Sqrt(signal.Select(x => x * x).Average()));     // RMS
+            features.Add(GetStandardDeviation(signal));                        // STD
         }
 
         Debug.Log($"Computed {features.Count} features");
         Debug.Log($"Feature sample [0-2]: [{string.Join(", ", features.Take(3))}]");
 
-        // After scaling
-        var scaledFeatures = new float[NUM_FEATURES];
-        for (int i = 0; i < NUM_FEATURES; i++)
-        {
-            scaledFeatures[i] = (features[i] - scalerMean[i]) / scalerScale[i];
-        }
-        Debug.Log($"Scaled features sample [0-2]: [{string.Join(", ", scaledFeatures.Take(3))}]");
+        // Remove the feature scaling step
+        var inputFeatures = features.ToArray();
 
-        // Create and execute tensor
-        using TensorFloat inputTensor = new TensorFloat(new TensorShape(1, NUM_FEATURES), scaledFeatures);
+        // Create and execute tensor with raw features
+        using TensorFloat inputTensor = new TensorFloat(new TensorShape(1, NUM_FEATURES), inputFeatures);
         Debug.Log($"Created input tensor with shape: (1, {NUM_FEATURES})");
 
         // Feed the tensor to the model
@@ -508,7 +501,7 @@ public class EMGInferencer : MonoBehaviour
     [System.Serializable]
     private class ScalerParams
     {
-        public float[] mean;    // Mean values for each feature
-        public float[] scale;   // Scale values for each feature
+        public float[] min_;    // MinMaxScaler min values
+        public float[] scale_;   // MinMaxScaler scale values
     }
 }
