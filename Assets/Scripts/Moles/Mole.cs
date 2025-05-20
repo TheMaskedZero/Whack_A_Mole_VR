@@ -348,7 +348,7 @@ public abstract class Mole : MonoBehaviour
             nameText.enabled = true;
             
             // Update position every time the mole is enabled
-            textTransform.position = transform.position + Vector3.up * 0.5f;
+            textTransform.position = transform.position + Vector3.up * 1.5f + Vector3.forward * -0.5f;
         }
 
         ChangeState(States.Enabled);
