@@ -95,22 +95,43 @@ public class DiskMole : Mole
         PlaySound(enableSound);
         PlayAnimation("EnableDisable");
 
+        // Set color and texture based on mole type
         if (moleType == Mole.MoleType.Target)
         {
             meshMaterial.color = enabledColor;
-            meshMaterial.mainTexture =  textureEnabled;
+            meshMaterial.mainTexture = textureEnabled;
             activeMoleNumber = base.GetActiveGesture();
             enabledColor = colorCycle[activeMoleNumber % colorCycle.Length];
+            
+            // Set text color to match the mole's color
+            if (nameText != null)
+            {
+                nameText.color = enabledColor;
+            }
         }
         else if (moleType == Mole.MoleType.DistractorLeft)
         {
             meshMaterial.color = fakeEnabledColor;
-            meshMaterial.mainTexture =  distractorLeftTexture;
-        } else if (moleType == Mole.MoleType.DistractorRight)
+            meshMaterial.mainTexture = distractorLeftTexture;
+            
+            // Set text color for distractor
+            if (nameText != null)
+            {
+                nameText.color = fakeEnabledColor;
+            }
+        }
+        else if (moleType == Mole.MoleType.DistractorRight)
         {
             meshMaterial.color = fakeEnabledColor;
-            meshMaterial.mainTexture =  distractorRightTexture;
+            meshMaterial.mainTexture = distractorRightTexture;
+            
+            // Set text color for distractor
+            if (nameText != null)
+            {
+                nameText.color = fakeEnabledColor;
+            }
         }
+
         base.PlayEnabling();
     }
 

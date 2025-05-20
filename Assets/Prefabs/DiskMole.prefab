@@ -5331,6 +5331,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultVisibility: 0
   disableCooldown: 3
+  textPrefab: {fileID: 758637927556807538, guid: 695ee8b1a60c0794896416bdc2113c5e,
+    type: 3}
   disabledColor: {r: 0.8235294, g: 0.8235294, b: 0.8235294, a: 0.77254903}
   enabledColor: {r: 0.6037736, g: 0.6037736, b: 0.6037736, a: 1}
   fakeEnabledColor: {r: 1, g: 0.59836286, b: 0, a: 1}

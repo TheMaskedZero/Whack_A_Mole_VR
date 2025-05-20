@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
 /*
 Mole abstract class. Contains the main behaviour of the mole and calls actions to be played on
@@ -52,6 +53,11 @@ public abstract class Mole : MonoBehaviour
     private bool performanceFeedback = true;
     private int activeTargetGesture;
     private string[] targetGestures = new string[] {"Pinch", "Resting", "Fist", "Resting"};
+
+    [SerializeField]
+    protected GameObject textPrefab; // Assign this in Unity Inspector
+    protected TextMeshPro nameText;
+    protected Transform textTransform;
 
     private void Awake() 
     {
@@ -308,7 +314,54 @@ public abstract class Mole : MonoBehaviour
 
     protected virtual void PlayEnabling() 
     {
+        // Create text if it doesn't exist
+        if (nameText == null && textPrefab != null)
+        {
+            GameObject textObj = Instantiate(textPrefab, transform);
+            // Position the text at the mole's position plus an offset upward
+            textObj.transform.position = transform.position + Vector3.up * 0.5f;
+            textObj.transform.localRotation = Quaternion.identity;
+            
+            nameText = textObj.GetComponent<TextMeshPro>();
+            if (nameText == null)
+            {
+                nameText = textObj.AddComponent<TextMeshPro>();
+            }
+            
+            nameText.alignment = TextAlignmentOptions.Center;
+            nameText.fontSize = 1;
+            textTransform = textObj.transform;
+        }
+
+        // Set and show the text
+        if (nameText != null)
+        {
+            nameText.text = $"Mole {id}";
+            nameText.enabled = true;
+            
+            // Update position every time the mole is enabled
+            textTransform.position = transform.position + Vector3.up * 0.5f;
+        }
+
         ChangeState(States.Enabled);
+    }
+
+    // Handles disabling the mole's text display
+    protected virtual void PlayDisabledText()
+    {
+        if (nameText != null)
+        {
+            nameText.enabled = false;
+        }
+    }
+
+    // Add this new method to ensure text always faces the camera
+    private void LateUpdate()
+    {
+        if (textTransform != null && nameText != null && nameText.enabled)
+        {
+            textTransform.rotation = Camera.main.transform.rotation;
+        }
     }
 
     protected virtual void PlayMissed() 
