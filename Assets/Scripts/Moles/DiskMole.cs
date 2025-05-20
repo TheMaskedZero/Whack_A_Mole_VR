@@ -102,34 +102,19 @@ public class DiskMole : Mole
             meshMaterial.mainTexture = textureEnabled;
             activeMoleNumber = base.GetActiveGesture();
             enabledColor = colorCycle[activeMoleNumber % colorCycle.Length];
-            
-            // Set text color to match the mole's color
-            if (nameText != null)
-            {
-                nameText.color = enabledColor;
-            }
+            // Remove the nameText.color setting
         }
         else if (moleType == Mole.MoleType.DistractorLeft)
         {
             meshMaterial.color = fakeEnabledColor;
             meshMaterial.mainTexture = distractorLeftTexture;
-            
-            // Set text color for distractor
-            if (nameText != null)
-            {
-                nameText.color = fakeEnabledColor;
-            }
+            // Remove the nameText.color setting
         }
         else if (moleType == Mole.MoleType.DistractorRight)
         {
             meshMaterial.color = fakeEnabledColor;
             meshMaterial.mainTexture = distractorRightTexture;
-            
-            // Set text color for distractor
-            if (nameText != null)
-            {
-                nameText.color = fakeEnabledColor;
-            }
+            // Remove the nameText.color setting
         }
 
         base.PlayEnabling();

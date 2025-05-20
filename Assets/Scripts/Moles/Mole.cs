@@ -318,7 +318,6 @@ public abstract class Mole : MonoBehaviour
         if (nameText == null && textPrefab != null)
         {
             GameObject textObj = Instantiate(textPrefab, transform);
-            // Position the text at the mole's position plus an offset upward
             textObj.transform.position = transform.position + Vector3.up * 0.5f;
             textObj.transform.localRotation = Quaternion.identity;
             
@@ -330,13 +329,22 @@ public abstract class Mole : MonoBehaviour
             
             nameText.alignment = TextAlignmentOptions.Center;
             nameText.fontSize = 1;
+            nameText.color = Color.black;
             textTransform = textObj.transform;
         }
 
-        // Set and show the text
+        // Set and show the text based on the current gesture
         if (nameText != null)
         {
-            nameText.text = $"Mole {id}";
+            string gesture = targetGestures[(activeTargetGesture+1) % targetGestures.Length];
+            if (moleType == MoleType.Target)
+            {
+                nameText.text = gesture; // Shows "Pinch", "Resting", or "Fist"
+            }
+            else
+            {
+                nameText.text = ""; // Shows "DistractorLeft" or "DistractorRight"
+            }
             nameText.enabled = true;
             
             // Update position every time the mole is enabled
