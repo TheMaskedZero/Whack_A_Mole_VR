@@ -50,10 +50,12 @@ public abstract class Mole : MonoBehaviour
     private float disabledTimeLeft = 0f;
     private bool isOnDisabledCoolDown = false;
     private bool performanceFeedback = true;
+    private int activeMoleNumber;
 
     private void Awake() 
     {
         SetVisibility(defaultVisibility);
+        activeMoleNumber = 0;
     }
 
     protected virtual void Start()
@@ -155,6 +157,7 @@ public abstract class Mole : MonoBehaviour
         expiringTime = expiringDuration;
         spawnOrder = moleSpawnOrder;
         ChangeState(States.Enabling);
+
     }
 
     public void Disable()
@@ -304,6 +307,7 @@ public abstract class Mole : MonoBehaviour
 
     protected virtual void PlayPop() 
     {
+        Debug.Log("Mole Popped");
         ChangeState(States.Popped);
     }
      

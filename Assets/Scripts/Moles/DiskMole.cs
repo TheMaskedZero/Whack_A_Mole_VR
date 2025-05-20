@@ -64,6 +64,8 @@ public class DiskMole : Mole
     private Animation animationPlayer;
     private Coroutine colorAnimation;
     private string playingClip = "";
+    private int activeMoleNumber;
+    private Color[] colorCycle = new Color[] {Color.green, Color.gray, Color.blue, Color.gray};
 
     protected override void Start()
     {
@@ -74,6 +76,7 @@ public class DiskMole : Mole
         audioSource = gameObject.GetComponent<AudioSource>();
         PlayAnimation("EnableDisable");
         meshMaterial.color = disabledColor;
+        activeMoleNumber = 0;
 
         base.Start();
     }
@@ -96,6 +99,8 @@ public class DiskMole : Mole
         {
             meshMaterial.color = enabledColor;
             meshMaterial.mainTexture =  textureEnabled;
+            enabledColor = colorCycle[activeMoleNumber % colorCycle.Length];
+            activeMoleNumber++;
         }
         else if (moleType == Mole.MoleType.DistractorLeft)
         {
