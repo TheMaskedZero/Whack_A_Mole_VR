@@ -347,16 +347,19 @@ public class EMGInferencer : MonoBehaviour
                         switch (lastStablePrediction)
                         {
                             case "Fist":
-                                tactorInterface.TriggerGraspingStateFeedback();
-                                whackingScript.WhackDatMoleOnDaNoggin("Fist");
+                                //tactorInterface.TriggerGraspingStateFeedback();
+                                //whackingScript.WhackDatMoleOnDaNoggin("Fist");
+                                // LOG FIST IDENTIFICATION HERE
                                 break;
                             case "Pinch":
-                                tactorInterface.TriggerPinchingStateFeedback();
-                                whackingScript.WhackDatMoleOnDaNoggin("Pinch");
+                                //tactorInterface.TriggerPinchingStateFeedback();
+                                //whackingScript.WhackDatMoleOnDaNoggin("Pinch");
+                                // LOG PINCH IDENTIFICATION HERE
                                 break;
                             case "Resting":
-                                tactorInterface.TriggerRestingStateFeedback();
-                                whackingScript.WhackDatMoleOnDaNoggin("Resting");
+                                //tactorInterface.TriggerRestingStateFeedback();
+                                //whackingScript.WhackDatMoleOnDaNoggin("Resting");
+                                // LOG RESTING IDENTIFICATION HERE
                                 break;
                             default:
                                 break;
