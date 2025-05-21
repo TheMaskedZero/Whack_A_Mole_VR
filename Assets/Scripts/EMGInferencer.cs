@@ -34,7 +34,7 @@ public class EMGInferencer : MonoBehaviour
     private readonly string[] gestureLabels = new string[] { "Fist", "Pinch", "Resting" };
 
     // EMG processing constants
-    private const int WINDOW_SIZE = 129;             // 250ms window at 70Hz sampling rate
+    private const int WINDOW_SIZE = 18;             // 250ms window at 70Hz sampling rate
     private const int NUM_FEATURES = 48;            // 6 features * 8 EMG channels
 
     // Data buffers and processing
@@ -62,7 +62,7 @@ public class EMGInferencer : MonoBehaviour
 
     // Add these fields at the top of the class with other private fields
     private Queue<string> predictionHistory = new Queue<string>();
-    private const int PREDICTION_POOL_SIZE = 5;
+    private const int PREDICTION_POOL_SIZE = 11;
     private string lastStablePrediction = "Waiting for data...";
 
     /// <summary>
