@@ -59,10 +59,13 @@ public abstract class Mole : MonoBehaviour
     protected TextMeshPro nameText;
     protected Transform textTransform;
 
+    private LoggingManager loggingManager;
+
     private void Awake() 
     {
         SetVisibility(defaultVisibility);
         activeTargetGesture = 0;
+        loggingManager = FindObjectOfType<LoggingManager>();
     }
 
     protected virtual void Start()
@@ -275,6 +278,7 @@ public abstract class Mole : MonoBehaviour
 
         if (Gesture == expectedGesture)
         {
+            loggingManager.Log("Event", "MolePopped", Gesture);
             PlayPop();
         }
 
@@ -340,6 +344,7 @@ public abstract class Mole : MonoBehaviour
             if (moleType == MoleType.Target)
             {
                 nameText.text = gesture; // Shows "Pinch", "Resting", or "Fist"
+                loggingManager.Log("Event", "Spawned_Mole_Gesture", gesture);
             }
             else
             {

@@ -17,6 +17,8 @@ public class EMGInferencer : MonoBehaviour
     private IWorker worker;                         // Sentis worker for model execution
     private Model runtimeModel;                     // Runtime representation of the ONNX model
 
+    [SerializeField] private LoggingManager loggingManager;
+
     [SerializeField] private TactorConnector tactorInterface;       // Reference to the TactorInterface for feedback
     [SerializeField] private WhackWithGesture whackingScript;
 
@@ -76,6 +78,7 @@ public class EMGInferencer : MonoBehaviour
         emgBuffer = new Queue<int[]>();
         features = new List<float>();
         Debug.Log("Initialized EMG buffer and features list");
+
 
         // Load scaler parameters
         LoadScalerParams();
@@ -350,16 +353,22 @@ public class EMGInferencer : MonoBehaviour
                                 //tactorInterface.TriggerGraspingStateFeedback();
                                 //whackingScript.WhackDatMoleOnDaNoggin("Fist");
                                 // LOG FIST IDENTIFICATION HERE
+                                loggingManager.Log("Sample", "Current_Gesture", "Fist");
+                                loggingManager.Log("Sample", "Current_Confidence", currentConfidence);
                                 break;
                             case "Pinch":
                                 //tactorInterface.TriggerPinchingStateFeedback();
                                 //whackingScript.WhackDatMoleOnDaNoggin("Pinch");
                                 // LOG PINCH IDENTIFICATION HERE
+                                loggingManager.Log("Sample", "Current_Gesture", "Pinch");
+                                loggingManager.Log("Sample", "Current_Confidence", currentConfidence);
                                 break;
                             case "Resting":
                                 //tactorInterface.TriggerRestingStateFeedback();
                                 //whackingScript.WhackDatMoleOnDaNoggin("Resting");
                                 // LOG RESTING IDENTIFICATION HERE
+                                loggingManager.Log("Sample", "Current_Gesture", "Resting");
+                                loggingManager.Log("Sample", "Current_Confidence", currentConfidence);
                                 break;
                             default:
                                 break;
@@ -507,4 +516,10 @@ public class EMGInferencer : MonoBehaviour
         public float[] min_;    // MinMaxScaler min values
         public float[] scale_;   // MinMaxScaler scale values
     }
+
+    public (string, float) GetCurrentPrediction()
+    {
+        return (lastStablePrediction, currentConfidence);
+    }
+
 }
