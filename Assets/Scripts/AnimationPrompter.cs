@@ -13,7 +13,7 @@ public class AnimationPrompter : MonoBehaviour
 
     [SerializeField] private TactorConnector tactorConnector;
 
-    private float timeSinceAnimationTriggered;
+    //private float timeSinceAnimationTriggered;
 
     // Start is called before the first frame update
     void Start()
@@ -22,7 +22,7 @@ public class AnimationPrompter : MonoBehaviour
         handGraspState = false;
         handPinchState = false;
         triggerTactor = false;
-        timeSinceAnimationTriggered = 0f;
+        //timeSinceAnimationTriggered = 0f;
 
         animator = GetComponent<Animator>();
     }
@@ -50,33 +50,36 @@ public class AnimationPrompter : MonoBehaviour
     public void TriggerDefaultAnimationState()
     {
         //if (Time.time - timeSinceAnimationTriggered > 2f)
-        animator.Play("Armature|Rest Position");
+        animator.SetTrigger("ReturnToRest");
+        //animator.Play("Armature|Rest Position");
         if (triggerTactor = true)
         {
             tactorConnector.TriggerRestingStateFeedback();
         }
-        timeSinceAnimationTriggered = Time.time;
+        //timeSinceAnimationTriggered = Time.time;
     }
 
     public void TriggerGraspAnimationState()
     {
         //if (Time.time - timeSinceAnimationTriggered > 2f)
+        animator.ResetTrigger("ReturnToRest");
         animator.Play("Armature|power");
         if (triggerTactor = true)
         {
             tactorConnector.TriggerGraspingStateFeedback();
         }
-        timeSinceAnimationTriggered = Time.time;
+        //timeSinceAnimationTriggered = Time.time;
     }
 
     public void TriggerPinchAnimationState()
     {
         //if (Time.time - timeSinceAnimationTriggered > 2f)
+        animator.ResetTrigger("ReturnToRest");
         animator.Play("Armature|pinch3_003");
         if (triggerTactor = true)
         {
             tactorConnector.TriggerPinchingStateFeedback();
         }
-        timeSinceAnimationTriggered = Time.time;
+        //timeSinceAnimationTriggered = Time.time;
     }
 }

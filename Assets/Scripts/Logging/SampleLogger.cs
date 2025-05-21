@@ -25,8 +25,12 @@ public class SampleLogger : MonoBehaviour
     [SerializeField]
     private GazeLogger gazeLogger;
 
+    [SerializeField] EMGInferencer emgInferencer;
+
     [SerializeField]
     private ViewportLogger viewportLogger;
+
+    [SerializeField] WhackWithGesture gestureWhacker;
 
     private TrackerHub trackerHub;
     private LoggingManager loggingManager;
@@ -134,6 +138,22 @@ public class SampleLogger : MonoBehaviour
             if (viewportLogger != null) {
                 Dictionary<string, object> viewportLogs = viewportLogger.GetViewportData();
                 foreach (KeyValuePair<string, object> pair in viewportLogs)
+                {
+                    sampleLog[pair.Key] = pair.Value;
+                }
+            }
+
+            if (gestureWhacker != null) {
+                Dictionary<string, object> observedGestureLogs = gestureWhacker.GetObservedGestures();
+                foreach (KeyValuePair<string, object> pair in observedGestureLogs)
+                {
+                    sampleLog[pair.Key] = pair.Value;
+                }
+            }
+
+            if (emgInferencer != null) {
+                Dictionary<string, object> observedEMGLogs = emgInferencer.GetEMGGestures();
+                foreach (KeyValuePair<string, object> pair in observedEMGLogs)
                 {
                     sampleLog[pair.Key] = pair.Value;
                 }

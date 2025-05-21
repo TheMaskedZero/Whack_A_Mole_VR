@@ -350,26 +350,41 @@ public class EMGInferencer : MonoBehaviour
                         switch (lastStablePrediction)
                         {
                             case "Fist":
-                                //tactorInterface.TriggerGraspingStateFeedback();
-                                //whackingScript.WhackDatMoleOnDaNoggin("Fist");
-                                // LOG FIST IDENTIFICATION HERE
-                                loggingManager.Log("Sample", "Current_Gesture", "Fist");
-                                loggingManager.Log("Sample", "Current_Confidence", currentConfidence);
+                                /*loggingManager.Log("Sample", new Dictionary<string, object>()
+                                {
+                                    { "Event", "Current_Gesture" },
+                                    { "GestureType", "Fist" },
+                                    { "Confidence", currentConfidence },
+                                    { "Time", Time.time },
+                                    //{ "Email", userEmail },
+                                    { "Framecount", Time.frameCount }
+                                });*/
                                 break;
+
                             case "Pinch":
-                                //tactorInterface.TriggerPinchingStateFeedback();
-                                //whackingScript.WhackDatMoleOnDaNoggin("Pinch");
-                                // LOG PINCH IDENTIFICATION HERE
-                                loggingManager.Log("Sample", "Current_Gesture", "Pinch");
-                                loggingManager.Log("Sample", "Current_Confidence", currentConfidence);
+                                /*loggingManager.Log("Sample", new Dictionary<string, object>()
+                                {
+                                    { "Event", "Current_Gesture" },
+                                    { "GestureType", "Pinch" },
+                                    { "Confidence", currentConfidence },
+                                    { "Time", Time.time },
+                                    //{ "Email", userEmail },
+                                    { "Framecount", Time.frameCount }
+                                });*/
                                 break;
+
                             case "Resting":
-                                //tactorInterface.TriggerRestingStateFeedback();
-                                //whackingScript.WhackDatMoleOnDaNoggin("Resting");
-                                // LOG RESTING IDENTIFICATION HERE
-                                loggingManager.Log("Sample", "Current_Gesture", "Resting");
-                                loggingManager.Log("Sample", "Current_Confidence", currentConfidence);
+                                /*loggingManager.Log("Sample", new Dictionary<string, object>()
+                                {
+                                    { "Event", "Current_Gesture" },
+                                    { "GestureType", "Resting" },
+                                    { "Confidence", currentConfidence },
+                                    { "Time", Time.time },
+                                    //{ "Email", userEmail },
+                                    { "Framecount", Time.frameCount }
+                                });*/
                                 break;
+
                             default:
                                 break;
                         }
@@ -520,6 +535,36 @@ public class EMGInferencer : MonoBehaviour
     public (string, float) GetCurrentPrediction()
     {
         return (lastStablePrediction, currentConfidence);
+    }
+
+
+    public Dictionary<string, object> GetEMGGestures()
+        {
+        var gestureData = new Dictionary<string, object>();
+
+        // Add the gesture type based on which is active
+        if (lastStablePrediction == "Fist")
+        {
+            gestureData["EMGGestureType"] = "Fist";
+            gestureData["EMGGestureConfidence"] = currentConfidence;
+        }
+        else if (lastStablePrediction == "Pinch")
+        {
+            gestureData["EMGGestureType"] = "Pinch";
+            gestureData["EMGGestureConfidence"] = currentConfidence;
+        }
+        else if (lastStablePrediction == "Resting")
+        {
+            gestureData["EMGGestureType"] = "Resting";
+            gestureData["EMGGestureConfidence"] = currentConfidence;
+        }
+        else
+        {
+            gestureData["EMGGestureType"] = "None";
+            gestureData["EMGGestureConfidence"] = 0f;
+        }
+
+        return gestureData;
     }
 
 }
