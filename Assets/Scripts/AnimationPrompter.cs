@@ -7,7 +7,7 @@ public class AnimationPrompter : MonoBehaviour
     [SerializeField] private bool handDefaultState;
     [SerializeField] private bool handGraspState;
     [SerializeField] private bool handPinchState;
-    [SerializeField] private bool triggerTactor;
+    [SerializeField] private bool triggerTactor = false;
 
     private Animator animator;
 
@@ -21,7 +21,6 @@ public class AnimationPrompter : MonoBehaviour
         handDefaultState = false;
         handGraspState = false;
         handPinchState = false;
-        triggerTactor = false;
         //timeSinceAnimationTriggered = 0f;
 
         animator = GetComponent<Animator>();
@@ -52,7 +51,7 @@ public class AnimationPrompter : MonoBehaviour
         //if (Time.time - timeSinceAnimationTriggered > 2f)
         animator.SetTrigger("ReturnToRest");
         //animator.Play("Armature|Rest Position");
-        if (triggerTactor = true)
+        if (triggerTactor == true)
         {
             tactorConnector.TriggerRestingStateFeedback();
         }
@@ -64,7 +63,7 @@ public class AnimationPrompter : MonoBehaviour
         //if (Time.time - timeSinceAnimationTriggered > 2f)
         animator.ResetTrigger("ReturnToRest");
         animator.Play("Armature|power");
-        if (triggerTactor = true)
+        if (triggerTactor == true)
         {
             tactorConnector.TriggerGraspingStateFeedback();
         }
@@ -76,7 +75,7 @@ public class AnimationPrompter : MonoBehaviour
         //if (Time.time - timeSinceAnimationTriggered > 2f)
         animator.ResetTrigger("ReturnToRest");
         animator.Play("Armature|pinch3_003");
-        if (triggerTactor = true)
+        if (triggerTactor == true)
         {
             tactorConnector.TriggerPinchingStateFeedback();
         }
