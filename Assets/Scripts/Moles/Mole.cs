@@ -93,10 +93,10 @@ public abstract class Mole : MonoBehaviour
             {"MoleNormalizedIndexY", "NULL"},
             {"MoleSurfaceHitLocationX", "NULL"},
             {"MoleSurfaceHitLocationY", "NULL"},
-            {"GestureUsed", "Unknown"},
-            {"GestureExpected", "Unknown"},
-            {"Result", "None"}
-            //{"Framecount", "-1"}
+            {"GestureUsed", "NULL"},
+            {"GestureExpected", "NULL"},
+            {"Result", "NULL"},
+            {"Framecount", "NULL"}
         });
     }
 
@@ -282,15 +282,12 @@ public abstract class Mole : MonoBehaviour
 
         if (Gesture == expectedGesture)
         {
-            loggerNotifier.NotifyLogger(
-            eventName: "MoleCodePop",
-            eventType: EventLogger.EventType.DefaultEvent,
-            overrideEventParameters: new Dictionary<string, object>
+            loggerNotifier.NotifyLogger("MoleCodePop", EventLogger.EventType.MoleEvent, new Dictionary<string, object>()
             {
-                { "GestureUsed", Gesture },
-                { "GestureExpected", expectedGesture },
-                { "Result", "Success" },
-                { "Framecount", Time.frameCount }
+                {"GestureUsed", Gesture},
+                {"GestureExpected", expectedGesture},
+                {"Result", "SUCCESS"},
+                {"Framecount", Time.frameCount}
             });
 
 

@@ -32,6 +32,8 @@ public class SampleLogger : MonoBehaviour
 
     [SerializeField] WhackWithGesture gestureWhacker;
 
+    [SerializeField] AnimationPrompter animationPrompter;
+
     private TrackerHub trackerHub;
     private LoggingManager loggingManager;
 
@@ -154,6 +156,14 @@ public class SampleLogger : MonoBehaviour
             if (emgInferencer != null) {
                 Dictionary<string, object> observedEMGLogs = emgInferencer.GetEMGGestures();
                 foreach (KeyValuePair<string, object> pair in observedEMGLogs)
+                {
+                    sampleLog[pair.Key] = pair.Value;
+                }
+            }
+
+            if (animationPrompter != null) {
+                Dictionary<string, object> observedTactorLogs = animationPrompter.GetTactorStatus();
+                foreach (KeyValuePair<string, object> pair in observedTactorLogs)
                 {
                     sampleLog[pair.Key] = pair.Value;
                 }

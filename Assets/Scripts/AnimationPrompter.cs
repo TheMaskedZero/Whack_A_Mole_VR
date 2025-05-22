@@ -82,4 +82,21 @@ public class AnimationPrompter : MonoBehaviour
         }
         //timeSinceAnimationTriggered = Time.time;
     }
+
+    public Dictionary<string, object> GetTactorStatus()
+        {
+        var tactorData = new Dictionary<string, object>();
+
+        // Add the gesture type based on which is active
+        if (triggerTactor == true)
+        {
+            tactorData["TactorsEnabled"] = "True";
+        }
+        else
+        {
+            tactorData["TactorsEnabled"] = "False";
+        }
+
+        return tactorData;
+    }
 }
