@@ -13,15 +13,12 @@ public class AnimationPrompter : MonoBehaviour
 
     [SerializeField] private TactorConnector tactorConnector;
 
-    //private float timeSinceAnimationTriggered;
-
     // Start is called before the first frame update
     void Start()
     {
         handDefaultState = false;
         handGraspState = false;
         handPinchState = false;
-        //timeSinceAnimationTriggered = 0f;
 
         animator = GetComponent<Animator>();
     }
@@ -29,6 +26,7 @@ public class AnimationPrompter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // These were purely used for manual triggering during debugging.
         if (handDefaultState == true)
         {
             TriggerDefaultAnimationState();
@@ -46,42 +44,39 @@ public class AnimationPrompter : MonoBehaviour
         }
     }
 
+    // Trigger the resting state animation on the prosthetic hand, and the resting state feedback (bugged).
     public void TriggerDefaultAnimationState()
     {
-        //if (Time.time - timeSinceAnimationTriggered > 2f)
         animator.SetTrigger("ReturnToRest");
-        //animator.Play("Armature|Rest Position");
         if (triggerTactor == true)
         {
             tactorConnector.TriggerRestingStateFeedback();
         }
-        //timeSinceAnimationTriggered = Time.time;
     }
 
+    // Same as above, but Fist state.
     public void TriggerGraspAnimationState()
     {
-        //if (Time.time - timeSinceAnimationTriggered > 2f)
         animator.ResetTrigger("ReturnToRest");
         animator.Play("Armature|power");
         if (triggerTactor == true)
         {
             tactorConnector.TriggerGraspingStateFeedback();
         }
-        //timeSinceAnimationTriggered = Time.time;
     }
 
+    // Same as above, but Pinch state.
     public void TriggerPinchAnimationState()
     {
-        //if (Time.time - timeSinceAnimationTriggered > 2f)
         animator.ResetTrigger("ReturnToRest");
         animator.Play("Armature|pinch3_003");
         if (triggerTactor == true)
         {
             tactorConnector.TriggerPinchingStateFeedback();
         }
-        //timeSinceAnimationTriggered = Time.time;
     }
 
+    // Construct a dictionary to be retrieved by the LoggingManager, in order to log whether tactors are enabled or disabled (test condition 1 or 2).
     public Dictionary<string, object> GetTactorStatus()
         {
         var tactorData = new Dictionary<string, object>();

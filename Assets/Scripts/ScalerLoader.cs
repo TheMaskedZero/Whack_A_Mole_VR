@@ -1,3 +1,4 @@
+// Generative AI (ChatGPT, 4.o mini) was used while writing this script.
 using UnityEngine;
 using System.IO;
 using Newtonsoft.Json;

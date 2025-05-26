@@ -1,3 +1,4 @@
+// Generative AI (Github Autopilot, Claude 3.5 sonnet) was used while writing this script.
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Thalmic.Myo;
 using UnityEngine.UI;
-using TMPro;  // Add this at the top with other using statements
+using TMPro;
 
 public class EMGInferencer : MonoBehaviour
 {
@@ -190,22 +191,6 @@ public class EMGInferencer : MonoBehaviour
 
                 
             }
-           /* // Add new EMG data to buffer
-            emgBuffer.Enqueue((int[])emgData.Clone());
-
-            // Keep buffer size limited to window size
-            while (emgBuffer.Count > WINDOW_SIZE)
-            {
-                emgBuffer.Dequeue();
-            }
-
-            // When we have enough samples, compute features and run inference
-            if (emgBuffer.Count == WINDOW_SIZE)
-            {
-                isPredicting = true;  // Raise the flag
-                RunInference();
-                
-            }*/
         }
     }
 
@@ -286,6 +271,7 @@ public class EMGInferencer : MonoBehaviour
             int predictedClass = System.Array.IndexOf(probabilities, probabilities.Max());
             float maxProb = probabilities.Max();
 
+            // Following if / else blocks threshold identified gestures based on threshold values set in the inspector.
             if (predictedClass == 2 && maxProb < restingThreshold)
             {
                 if (showDebugInfo == true)
@@ -347,6 +333,7 @@ public class EMGInferencer : MonoBehaviour
                     if (mostCommon.Count() >= 2)
                     {
                         lastStablePrediction = mostCommon.Key;
+                        // Switch statement used below is deprecated. Was an early attempt at using the logging manager.
                         switch (lastStablePrediction)
                         {
                             case "Fist":
@@ -537,7 +524,8 @@ public class EMGInferencer : MonoBehaviour
         return (lastStablePrediction, currentConfidence);
     }
 
-
+    // Construct a dictionary of latest gestures labelled by the EMG inferencer as well as the latest confidence output.
+    // The LoggingManager (or, more precisely -- the SampleLogger) collects this dictionary in order to continuously log the data.
     public Dictionary<string, object> GetEMGGestures()
         {
         var gestureData = new Dictionary<string, object>();

@@ -1,3 +1,4 @@
+// This is a wrapper script bundled with the TDK software.
 using System.Collections;
 using System.Runtime.InteropServices;
 using System;

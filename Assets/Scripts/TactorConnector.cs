@@ -1,3 +1,4 @@
+// Generative AI (ChatGPT) was used while writing this script, though it is mainly based on EAI's TDK Documentation included with their Universal Controller software.
 using UnityEngine;
 using System;
 using Tdk;
@@ -178,6 +179,7 @@ public class TactorConnector : MonoBehaviour
         CheckError(TdkInterface.ShutdownTI());
     }
 
+    // This returns a description of encountered errors when attempting to interface with the TDK software.
     private void CheckError(int ret) // Checks the tactor device software for errors
     {
         if (ret < 0)
@@ -186,6 +188,7 @@ public class TactorConnector : MonoBehaviour
         }
     }
 
+    // Below are base functions defined largely by TDK documentation
     void ApplySettingsToTactor(int tactorID, int gain, int frequency) // Applies gain and frequency settings to the specified tactor
     {
         Debug.Log($"[Tactor {tactorID}] Setting Gain: {gain}, Freq: {frequency}");
@@ -205,6 +208,7 @@ public class TactorConnector : MonoBehaviour
         CheckError(TdkInterface.RampFreq(connectedBoardId, tactorID, start, end, duration, func, delay));
     }
 
+    // Used for manual testing of tactors.
     public void ApplyAllStaticSettings() // Applies gain and frequency settings to all 5 tactors
     {
         ApplySettingsToTactor(1, gain1, frequency1);
@@ -214,6 +218,7 @@ public class TactorConnector : MonoBehaviour
         ApplySettingsToTactor(5, gain5, frequency5);
     }
 
+    // Deprecated function used during implementation
     public void RampAllGains(int rampGainStart, int rampGainEnd, int rampDuration, int rampFunc) // Ramps the gain of all 5 tactors from rampGainStart to rampGainEnd
     {
         RampGain(1, rampGainStart, rampGainEnd, rampDuration, rampFunc);
@@ -242,6 +247,7 @@ public class TactorConnector : MonoBehaviour
         RampFrequency(5, ramp5FreqStart, ramp5FreqEnd, ramp5Duration, ramp5Func);
     }
 
+    // Triggers a 5 tactor burst of vibrations.
     public void TriggerGraspingStateFeedback()
     {
         // Change values here to match our intended tactile feedback
@@ -260,6 +266,7 @@ public class TactorConnector : MonoBehaviour
         lastState = "Grasping";
     }
 
+    // Triggers a 250ms burst of vibrations across all enabled tactors (During testing: Larger tactor near the thumb, and the next 2 in line)
     public void TriggerPinchingStateFeedback()
     {
         // Change values here to match our intended tactile feedback
@@ -281,6 +288,7 @@ public class TactorConnector : MonoBehaviour
     public void TriggerRestingStateFeedback()
     {
         // Change values here to match our intended tactile feedback
+        // Switch was intended to be used in order to trigger a "fading out" ramping function from the prior gesture. RampGain function is not currently working, though.
         switch (lastState)
         {
             case "":
